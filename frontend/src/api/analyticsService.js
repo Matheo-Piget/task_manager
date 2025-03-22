@@ -1,4 +1,4 @@
-// Ajoutez ces fonctions à la fin du fichier existant
+// Ce fichier contient des fonctions pour récupérer des données d'analyse fictives
 
 export const getCompletionTrends = async (timeRange) => {
   try {
