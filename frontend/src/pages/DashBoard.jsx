@@ -22,7 +22,7 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {setLoading(true);
         // Fetch recent tasks
-        const tasksResponse = await getTasks({ limit: 5, sortBy: 'createdAt', order: 'desc' });
+        const tasksResponse = await getTasks();
         setRecentTasks(tasksResponse);
         
         // Fetch statistics

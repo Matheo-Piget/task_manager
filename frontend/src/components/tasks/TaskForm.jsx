@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { createTask, updateTask, getTaskById } from '../../api/taskService';
 import { getProjects } from '../../api/projectService';
 import { getTags } from '../../api/tagService';
 
 const TaskForm = ({ taskId, onSuccess }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const isEditMode = !!taskId;
   
   const [formData, setFormData] = useState({
@@ -103,7 +103,7 @@ const TaskForm = ({ taskId, onSuccess }) => {
       if (onSuccess) {
         onSuccess(result);
       } else {
-        history.push('/tasks');
+        navigate('/');
       }
     } catch (err) {
       setLoading(false);
@@ -220,7 +220,7 @@ const TaskForm = ({ taskId, onSuccess }) => {
         <div className="form-actions">
           <button
             type="button"
-            onClick={() => history.goBack()}
+            onClick={() => navigate('/')}
             className="btn-secondary"
           >
             Cancel
