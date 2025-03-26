@@ -1,24 +1,66 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthContext, AuthProvider } from './context/AuthContext';
 import Dashboard from './pages/DashBoard';
 import Analytics from './pages/Analytics';
+import Login from './pages/Login';
+import TaskForm from './components/tasks/TaskForm';
+import Layout from './components/layout/Layout'; // Ajoutez cette ligne
 
 // Styles
 import './styles/App.css';
+
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useContext(AuthContext);
+  
+  if (loading) {
+    return <div className="loading">Loading...</div>;
+  }
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  
+  return children;
+};
+
+function AppRoutes() {
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        
+        <Route path="/" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/analytics" element={
+          <ProtectedRoute>
+            <Analytics />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/tasks/new" element={
+          <ProtectedRoute>
+            <TaskForm />
+          </ProtectedRoute>
+        } />
+        
+        {/* Redirect to login for unknown routes */}
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </Layout>
+  );
+}
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
-          {/* Pour le moment, accès direct aux pages sans authentification */}
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/analytics" element={<Analytics />} />
-          
-          {/* Rediriger vers la page d'accueil pour les routes inconnues */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+        <AppRoutes />
       </BrowserRouter>
     </AuthProvider>
   );

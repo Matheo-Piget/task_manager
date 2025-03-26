@@ -1,18 +1,8 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api';
-
-// Create axios instance
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+import apiClient from './authService'; // Import the configured axios instance
 
 export const getTasks = async (filters = {}) => {
   try {
-    const response = await api.get('/tasks');
+    const response = await apiClient.get('/tasks', { params: filters });
     return response.data || [];
   } catch (error) {
     console.error('Error fetching tasks:', error);
@@ -22,7 +12,7 @@ export const getTasks = async (filters = {}) => {
 
 export const getTaskById = async (taskId) => {
   try {
-    const response = await api.get(`/tasks/${taskId}`);
+    const response = await apiClient.get(`/tasks/${taskId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching task:', error);
@@ -32,7 +22,7 @@ export const getTaskById = async (taskId) => {
 
 export const createTask = async (taskData) => {
   try {
-    const response = await api.post('/tasks', taskData);
+    const response = await apiClient.post('/tasks', taskData);
     return response.data;
   } catch (error) {
     console.error('Error creating task:', error);
@@ -42,7 +32,7 @@ export const createTask = async (taskData) => {
 
 export const updateTask = async (taskId, taskData) => {
   try {
-    const response = await api.put(`/tasks/${taskId}`, taskData);
+    const response = await apiClient.put(`/tasks/${taskId}`, taskData);
     return response.data;
   } catch (error) {
     console.error('Error updating task:', error);
@@ -52,7 +42,7 @@ export const updateTask = async (taskId, taskData) => {
 
 export const deleteTask = async (taskId) => {
   try {
-    await api.delete(`/tasks/${taskId}`);
+    await apiClient.delete(`/tasks/${taskId}`);
     return true;
   } catch (error) {
     console.error('Error deleting task:', error);
@@ -61,23 +51,29 @@ export const deleteTask = async (taskId) => {
 };
 
 export const getTaskStatistics = async () => {
-  // Pour le développement, retourne des données fictives
-  return {
-    totalTasks: 18,
-    completedTasks: 8,
-    overdueTasks: 3,
-    upcomingTasks: 7,
-    statusDistribution: {
-      TODO: 5,
-      IN_PROGRESS: 3,
-      DONE: 8,
-      ARCHIVED: 2
-    },
-    priorityDistribution: {
-      LOW: 4,
-      MEDIUM: 7,
-      HIGH: 5,
-      URGENT: 2
-    }
-  };
+  try {
+    const response = await apiClient.get('/tasks/statistics');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching task statistics:', error);
+    // Return some default data as a fallback
+    return {
+      totalTasks: 0,
+      completedTasks: 0,
+      overdueTasks: 0,
+      upcomingTasks: 0,
+      statusDistribution: {
+        TODO: 0,
+        IN_PROGRESS: 0,
+        DONE: 0,
+        ARCHIVED: 0
+      },
+      priorityDistribution: {
+        LOW: 0,
+        MEDIUM: 0,
+        HIGH: 0,
+        URGENT: 0
+      }
+    };
+  }
 };

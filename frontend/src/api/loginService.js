@@ -1,41 +1,35 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/auth';
-
-// Create axios instance
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+import apiClient from './authService'; // Import the configured axios instance
 
 export const loginUser = async (credentials) => {
   try {
-    const response = await api.post('/login', credentials);
+    const response = await apiClient.post('/auth/login', credentials);
+    // Store token in localStorage
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+    }
     return response.data;
   } catch (error) {
     console.error('Login error:', error);
-    throw new Error('Failed to login');
+    throw error;
   }
 };
 
 export const registerUser = async (userData) => {
   try {
-    const response = await api.post('/register', userData);
+    const response = await apiClient.post('/auth/register', userData);
     return response.data;
   } catch (error) {
     console.error('Registration error:', error);
-    throw new Error('Failed to register');
+    throw error;
   }
 };
 
 export const getUser = async () => {
   try {
-    const response = await api.get('/me');
+    const response = await apiClient.get('/auth/me');
     return response.data;
   } catch (error) {
     console.error('Get user error:', error);
-    throw new Error('Failed to get user data');
+    throw error;
   }
 };

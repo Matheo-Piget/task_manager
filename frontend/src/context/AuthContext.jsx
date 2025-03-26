@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { getUser } from '../api/loginService';
 
 export const AuthContext = createContext();
 
@@ -7,10 +8,12 @@ export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Vérifier si l'utilisateur est déjà connecté au chargement (localStorage)
+  // Check if user is already logged in on load
   useEffect(() => {
+    const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    
+    if (token && storedUser) {
       try {
         const userData = JSON.parse(storedUser);
         setUser(userData);
@@ -18,6 +21,7 @@ export function AuthProvider({ children }) {
       } catch (error) {
         console.error('Failed to parse stored user data:', error);
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
       }
     }
     setLoading(false);
@@ -27,12 +31,18 @@ export function AuthProvider({ children }) {
     setUser(userData);
     setIsAuthenticated(true);
     localStorage.setItem('user', JSON.stringify(userData));
+    
+    // Store token if it exists in the response
+    if (userData && userData.token) {
+      localStorage.setItem('token', userData.token);
+    }
   };
 
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
 
   return (

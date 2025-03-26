@@ -1,119 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createTask, updateTask, getTaskById } from '../../api/taskService';
-import { getProjects } from '../../api/projectService';
-import { getTags } from '../../api/tagService';
+import { createTask } from '../../api/taskService';
 
-const TaskForm = ({ taskId, onSuccess }) => {
+const TaskForm = () => {
   const navigate = useNavigate();
-  const isEditMode = !!taskId;
-  
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     dueDate: '',
     priority: 'MEDIUM',
-    status: 'TODO',
-    projectId: '',
-    tags: []
+    status: 'TODO'
   });
-  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [projects, setProjects] = useState([]);
-  const [availableTags, setAvailableTags] = useState([]);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch projects and tags for dropdowns
-        const [projectsData, tagsData] = await Promise.all([
-          getProjects(),
-          getTags()
-        ]);
-        
-        setProjects(projectsData);
-        setAvailableTags(tagsData);
-        
-        // If in edit mode, fetch the task data
-        if (isEditMode) {
-          const taskData = await getTaskById(taskId);
-          
-          // Format due date for input
-          let formattedDueDate = '';
-          if (taskData.dueDate) {
-            formattedDueDate = new Date(taskData.dueDate)
-              .toISOString()
-              .substring(0, 16);
-          }
-          
-          setFormData({
-            title: taskData.title || '',
-            description: taskData.description || '',
-            dueDate: formattedDueDate,
-            priority: taskData.priority || 'MEDIUM',
-            status: taskData.status || 'TODO',
-            projectId: taskData.project?.id || '',
-            tags: taskData.tags?.map(tag => tag.id) || []
-          });
-        }
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    
-    fetchData();
-  }, [taskId, isEditMode]);
-  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-  
-  const handleTagsChange = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-    setFormData(prev => ({ ...prev, tags: selectedOptions }));
-  };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
-      // Prepare data for API
-      const taskData = {
-        ...formData,
-        project: formData.projectId ? { id: formData.projectId } : null,
-        tags: formData.tags.map(tagId => ({ id: tagId }))
-      };
-      
-      // Remove projectId which is not part of the Task model
-      delete taskData.projectId;
-      
-      let result;
-      if (isEditMode) {
-        result = await updateTask(taskId, taskData);
-      } else {
-        result = await createTask(taskData);
-      }
-      
+      await createTask(formData);
       setLoading(false);
-      
-      if (onSuccess) {
-        onSuccess(result);
-      } else {
-        navigate('/');
-      }
+      navigate('/'); // Redirect to dashboard after successful creation
     } catch (err) {
       setLoading(false);
-      setError(err.message);
+      setError(err.message || 'Failed to create task');
     }
   };
-  
+
   return (
     <div className="task-form">
-      <h2>{isEditMode ? 'Edit Task' : 'Create New Task'}</h2>
+      <h2>Create New Task</h2>
       
       {error && <div className="error-message">{error}</div>}
       
@@ -178,43 +101,7 @@ const TaskForm = ({ taskId, onSuccess }) => {
             <option value="TODO">To Do</option>
             <option value="IN_PROGRESS">In Progress</option>
             <option value="DONE">Done</option>
-            <option value="ARCHIVED">Archived</option>
           </select>
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="projectId">Project</label>
-          <select
-            id="projectId"
-            name="projectId"
-            value={formData.projectId}
-            onChange={handleChange}
-          >
-            <option value="">None</option>
-            {projects.map(project => (
-              <option key={project.id} value={project.id}>
-                {project.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="tags">Tags</label>
-          <select
-            id="tags"
-            name="tags"
-            multiple
-            value={formData.tags}
-            onChange={handleTagsChange}
-          >
-            {availableTags.map(tag => (
-              <option key={tag.id} value={tag.id}>
-                {tag.name}
-              </option>
-            ))}
-          </select>
-          <small>Hold Ctrl (or Cmd) to select multiple tags</small>
         </div>
         
         <div className="form-actions">
@@ -230,7 +117,7 @@ const TaskForm = ({ taskId, onSuccess }) => {
             disabled={loading}
             className="btn-primary"
           >
-            {loading ? 'Saving...' : isEditMode ? 'Update Task' : 'Create Task'}
+            {loading ? 'Creating...' : 'Create Task'}
           </button>
         </div>
       </form>
