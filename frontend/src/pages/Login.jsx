@@ -19,12 +19,12 @@ const Login = () => {
     
     try {
       const response = await loginUser({ username, password });
-      // Modifiez cette partie pour utiliser directement response.user au lieu de response
-      login(response.user);
+      console.log('Réponse login:', response); // Ajout pour débogage
+      login(response.user); // Le problème est ici - response contient déjà l'utilisateur dans sa propriété user
       navigate('/');
     } catch (err) {
-      setError('Invalid username or password');
       console.error('Login error:', err);
+      setError('Nom d\'utilisateur ou mot de passe invalide');
     } finally {
       setIsLoading(false);
     }

@@ -24,45 +24,45 @@ import io.jsonwebtoken.security.Keys;
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:5173")
 public class AuthController {
-    
+
     @Autowired
     private AuthService authService;
-    
+
     private static final String SECRET_KEY = "thisIsASecretKeyThatShouldBeVeryLongAndComplex";
-    
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         User registeredUser = authService.registerUser(user);
-        
+
         String token = generateJwtToken(registeredUser);
-        
+
         Map<String, Object> response = new HashMap<>();
         response.put("user", registeredUser);
         response.put("token", token);
-        
+
         return ResponseEntity.ok(response);
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody Map<String, String> loginRequest) {
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
-        
+
         User user = authService.authenticateUser(username, password);
-        
+
         if (user != null) {
             String token = generateJwtToken(user);
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("user", user);
             response.put("token", token);
-            
+
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.badRequest().body("Invalid credentials");
         }
     }
-    
+
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
         // This is a mock implementation for now
@@ -73,13 +73,13 @@ public class AuthController {
         tempUser.setEmail("admin@example.com");
         tempUser.setFirstName("Admin");
         tempUser.setLastName("User");
-        
+
         return ResponseEntity.ok(tempUser);
     }
-    
+
     private String generateJwtToken(User user) {
         long now = System.currentTimeMillis();
-        
+
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .claim("userId", user.getId())
