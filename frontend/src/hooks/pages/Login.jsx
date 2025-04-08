@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { loginUser } from '../api/loginService';
+import { AuthContext } from '../../context/AuthContext';
+import { loginUser } from '../../api/loginService';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -12,6 +12,7 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // Dans handleSubmit de Login.jsx
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -19,8 +20,14 @@ const Login = () => {
     
     try {
       const response = await loginUser({ username, password });
-      console.log('Réponse login:', response); // Ajout pour débogage
-      login(response.user); // Le problème est ici - response contient déjà l'utilisateur dans sa propriété user
+      console.log('Réponse de login:', response);
+      
+      // Problème résolu: passage des bonnes données à login()
+      login({
+        ...response.user,
+        token: response.token
+      });
+      
       navigate('/');
     } catch (err) {
       console.error('Login error:', err);

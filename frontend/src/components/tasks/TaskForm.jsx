@@ -8,8 +8,8 @@ const TaskForm = () => {
     title: '',
     description: '',
     dueDate: '',
-    priority: 'MEDIUM',
-    status: 'TODO'
+    priority: 'MEDIUM', // MEDIUM est une enum dans Task.java
+    status: 'TODO'      // TODO est une enum dans Task.java
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

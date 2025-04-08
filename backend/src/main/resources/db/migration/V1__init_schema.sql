@@ -55,4 +55,4 @@ CREATE TABLE task_tags (
 
 -- Créer un utilisateur admin initial (mot de passe : 'password')
 INSERT INTO users (username, email, password, first_name, last_name) 
-VALUES ('admin', 'admin@example.com', '$2a$10$dXJ3SW6G7P50lGmMkkmwe.20cQQubK3.HZWzG3YB1tlRy.fqvM/BG', 'Admin', 'User');
+VALUES ('admin', 'admin@example.com', 'password', 'Admin', 'User');

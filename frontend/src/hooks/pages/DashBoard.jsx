@@ -1,11 +1,11 @@
 // pages/Dashboard.js
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getTasks, getTaskStatistics } from '../api/taskService';
-import TaskCard from '../components/tasks/TaskCard';
-import StatCard from '../components/dashboard/StatCard';
-import PriorityChart from '../components/dashboard/Priority';
-import StatusChart from '../components/dashboard/StatusChart';
+import { getTasks, getTaskStatistics } from '../../api/taskService';
+import TaskCard from '../../components/tasks/TaskCard';
+import StatCard from '../../components/dashboard/StatCard';
+import StatusChart from '../../components/dashboard/StatusChart';  
+import PriorityChart from '../../components/dashboard/Priority';
 
 const Dashboard = () => {
   const [recentTasks, setRecentTasks] = useState([]);

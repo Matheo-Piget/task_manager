@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {
-  getCompletionTrends,
-  getProductivityMetrics,
-  getTaskDistribution,
-  getCompletionRateByTags
-} from '../api/analyticsService';
-import CompletionTrendsChart from '../components/analytics/CompletionTrendsChart';
-import ProductivityMetricsCard from '../components/analytics/ProductivityMetricsCard';
-import DistributionChart from '../components/analytics/DistributionChart'; 
-import TagCompletionChart from '../components/analytics/TagCompletionChart';
-
+import { 
+  getCompletionTrends, 
+  getProductivityMetrics, 
+  getTaskDistribution, 
+  getCompletionRateByTags 
+} from '../../api/analyticsService';
+import CompletionTrendsChart from '../../components/analytics/CompletionTrendsChart';
+import ProductivityMetricsCard from '../../components/analytics/ProductivityMetricsCard';
+import DistributionChart from '../../components/analytics/DistributionChart';
+import TagCompletionChart from '../../components/analytics/TagCompletionChart';
 
 const Analytics = () => {
   const [timeRange, setTimeRange] = useState('week');

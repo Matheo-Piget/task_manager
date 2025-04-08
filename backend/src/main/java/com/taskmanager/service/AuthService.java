@@ -26,7 +26,8 @@ public class AuthService {
     
     public User authenticateUser(String username, String password) {
         User user = userRepository.findByUsername(username);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+        if (user != null && password.equals(user.getPassword())) {
+            System.out.println("Mot de passe correct pour l'utilisateur : " + user.getUsername());
             return user;
         }
         return null;

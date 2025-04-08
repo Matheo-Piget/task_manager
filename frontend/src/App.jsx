@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthContext, AuthProvider } from './context/AuthContext';
-import Dashboard from './pages/DashBoard';
-import Analytics from './pages/Analytics';
-import Login from './pages/Login';
+import { AuthContext } from './context/AuthContext';
+import AuthProvider from './context/AuthContext'; // Changé ici
+import Dashboard from './hooks/pages/DashBoard';
+import Analytics from './hooks/pages/Analytics';
+import Login from './hooks/pages/Login';
 import TaskForm from './components/tasks/TaskForm';
 import Layout from './components/layout/Layout'; // Ajoutez cette ligne
 

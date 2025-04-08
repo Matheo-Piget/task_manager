@@ -48,18 +48,24 @@ public class AuthController {
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
 
+        System.out.println("Tentative de connexion : " + username);
+        System.out.println("Mot de passe fourni : " + password);
+    
+
         User user = authService.authenticateUser(username, password);
 
         if (user != null) {
+            System.out.println("Utilisateur trouvé : " + user.getUsername());
             String token = generateJwtToken(user);
-
+            
             Map<String, Object> response = new HashMap<>();
             response.put("user", user);
             response.put("token", token);
-
+            
             return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.badRequest().body("Invalid credentials");
+            System.out.println("ÉCHEC : Utilisateur non trouvé ou mot de passe incorrect");
+            return ResponseEntity.badRequest().body("Identifiants invalides");
         }
     }
 
@@ -79,7 +85,7 @@ public class AuthController {
 
     private String generateJwtToken(User user) {
         long now = System.currentTimeMillis();
-
+    
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .claim("userId", user.getId())
