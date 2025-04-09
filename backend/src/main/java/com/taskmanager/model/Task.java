@@ -19,6 +19,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Data;
@@ -52,7 +53,7 @@ public class Task {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    @JsonBackReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

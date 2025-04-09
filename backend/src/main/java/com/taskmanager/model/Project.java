@@ -17,8 +17,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
@@ -42,12 +41,12 @@ public class Project {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    @JsonBackReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
     
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Set<Task> tasks = new HashSet<>();
     
