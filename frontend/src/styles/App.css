@@ -143,6 +143,8 @@ button {
 }
 
 /* Layout premium avec depth effect */
+/* Remplacez vos styles de sidebar actuels par ceux-ci */
+
 .app-container {
   display: flex;
   min-height: 100vh;
@@ -159,25 +161,30 @@ button {
   flex-direction: column;
   position: fixed;
   height: 100vh;
-  overflow-y: auto;
+  overflow: hidden;
   box-shadow: var(--shadow-lg);
   z-index: 10;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
-  transition: var(--transition-smooth);
+  transition: width 0.3s ease-in-out;
 }
 
 .sidebar:hover {
   width: 280px;
-  transition: ease-in-out 0.3s;
 }
 
 .main-content {
   flex: 1;
-  margin-left: 280px;
+  margin-left: 80px;
   padding: 2.5rem;
-  max-width: 100%;
+  max-width: calc(100% - 80px);
   background: linear-gradient(135deg, var(--bg-main) 0%, rgba(15, 23, 42, 0.95) 100%);
   min-height: 100vh;
+  transition: margin-left 0.3s ease-in-out, max-width 0.3s ease-in-out;
+}
+
+.sidebar:hover + .main-content {
+  margin-left: 280px;
+  max-width: calc(100% - 280px);
 }
 
 .sidebar-header {
@@ -186,31 +193,29 @@ button {
   padding-bottom: 1.75rem;
   margin-bottom: 1.75rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
 }
 
 .sidebar-logo {
   font-size: 1.625rem;
   font-weight: 700;
-  margin-right: 0.5rem;
   background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-1) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.75px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nav-list {
-  width: 80px;
   list-style: none;
   margin-bottom: 2.5rem;
-}
-
-.nav-list:hover{
-  width: 280px;
-
+  width: 100%;
 }
 
 .nav-item {
   margin-bottom: 0.625rem;
+  width: 100%;
 }
 
 .nav-link {
@@ -222,6 +227,9 @@ button {
   transition: var(--transition-base);
   font-weight: 500;
   letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
 }
 
 .nav-link:hover {
@@ -244,12 +252,14 @@ button {
   justify-content: center;
   font-size: 1.125rem;
   opacity: 0.85;
+  min-width: 20px;
 }
 
 .user-profile {
   margin-top: auto;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+  width: 100%;
 }
 
 .profile-link {
@@ -259,6 +269,40 @@ button {
   color: var(--gray-300);
   border-radius: var(--border-radius);
   transition: var(--transition-base);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: calc(100% - 3.625rem); /* Ajustement pour éviter débordement */
+}
+
+.profile-name {
+  font-weight: 600;
+  color: var(--gray-200);
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-button {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gray-400);
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition-base);
+  margin-top: 0.5rem;
+  width: fit-content;
+  white-space: nowrap;
 }
 
 .profile-link:hover {
