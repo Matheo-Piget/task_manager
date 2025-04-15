@@ -88,6 +88,8 @@ a:hover {
   color: var(--primary-color);
 }
 
+/* ... existing styles ... */
+
 .logout-button {
   background: transparent;
   border: none;
@@ -149,7 +151,7 @@ button {
 }
 
 .sidebar {
-  width: 280px;
+  width: 80px;
   background: var(--bg-sidebar);
   color: var(--gray-300);
   padding: 1.75rem 1.25rem;
@@ -162,6 +164,11 @@ button {
   z-index: 10;
   border-right: 1px solid rgba(255, 255, 255, 0.05);
   transition: var(--transition-smooth);
+}
+
+.sidebar:hover {
+  width: 280px;
+  transition: ease-in-out 0.3s;
 }
 
 .main-content {
@@ -192,8 +199,14 @@ button {
 }
 
 .nav-list {
+  width: 80px;
   list-style: none;
   margin-bottom: 2.5rem;
+}
+
+.nav-list:hover{
+  width: 280px;
+
 }
 
 .nav-item {
