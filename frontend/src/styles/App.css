@@ -88,6 +88,38 @@ a:hover {
   color: var(--primary-color);
 }
 
+.logout-button {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gray-400);
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition-base);
+  margin-top: 0.5rem;
+}
+
+.logout-button:hover {
+  color: var(--danger-color);
+  background-color: rgba(239, 68, 68, 0.1);
+  transform: translateX(2px);
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  font-weight: 600;
+  color: var(--gray-200);
+  margin-bottom: 0.25rem;
+}
+
 a:hover:not(.nav-link, .profile-link)::after {
   width: 100%;
 }

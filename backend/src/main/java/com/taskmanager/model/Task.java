@@ -19,14 +19,18 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.Data;
 
 @Entity
 @Table(name = "tasks")
 @Data
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Task {
     
     @Id
@@ -61,6 +65,7 @@ public class Task {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "project_id")
+    @JsonIdentityReference(alwaysAsId = true)
     private Project project;
     
     @ManyToMany
@@ -69,6 +74,7 @@ public class Task {
         joinColumns = @JoinColumn(name = "task_id"),
         inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @JsonIdentityReference(alwaysAsId = true)
     private Set<Tag> tags = new HashSet<>();
     
     @PrePersist

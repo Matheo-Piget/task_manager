@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taskmanager.dto.TaskStatisticsDTO;
 import com.taskmanager.model.Task;
 import com.taskmanager.model.Task.Status;
 import com.taskmanager.repository.TaskRepository;
@@ -76,38 +77,8 @@ public class TaskController {
     }
 
     @GetMapping("/statistics")
-    public ResponseEntity<Map<String, Object>> getTaskStatistics() {
-        // Créer des statistiques basiques pour l'utilisateur temporaire
-        Map<String, Object> statistics = new HashMap<>();
-
-        // Compter les tâches par statut
-        Long totalTasks = taskRepository.countByUserId(TEMP_USER_ID);
-        Long completedTasks = taskService.countTasksByStatus(TEMP_USER_ID, Status.DONE);
-        Long overdueTasks = taskRepository.countByUserIdAndDueDateBefore(
-                TEMP_USER_ID,
-                LocalDateTime.now());
-
-        // Créer des distributions fictives
-        Map<String, Integer> statusDistribution = new HashMap<>();
-        statusDistribution.put("TODO", 3);
-        statusDistribution.put("IN_PROGRESS", 2);
-        statusDistribution.put("DONE", completedTasks.intValue());
-        statusDistribution.put("ARCHIVED", 1);
-
-        Map<String, Integer> priorityDistribution = new HashMap<>();
-        priorityDistribution.put("LOW", 2);
-        priorityDistribution.put("MEDIUM", 3);
-        priorityDistribution.put("HIGH", 2);
-        priorityDistribution.put("URGENT", 1);
-
-        // Remplir les statistiques
-        statistics.put("totalTasks", totalTasks);
-        statistics.put("completedTasks", completedTasks);
-        statistics.put("overdueTasks", overdueTasks);
-        statistics.put("upcomingTasks", 2); // Valeur fictive
-        statistics.put("statusDistribution", statusDistribution);
-        statistics.put("priorityDistribution", priorityDistribution);
-
-        return ResponseEntity.ok(statistics);
+    public ResponseEntity<TaskStatisticsDTO> getTaskStatistics() {
+        TaskStatisticsDTO stats = taskService.getTaskStatistics(TEMP_USER_ID);
+        return ResponseEntity.ok(stats);
     }
 }
