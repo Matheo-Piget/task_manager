@@ -1,13 +1,15 @@
 import React, { useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthContext } from './context/AuthContext';
-import AuthProvider from './context/AuthContext'; // Changé ici
+import AuthProvider from './context/AuthContext';
 import Dashboard from './hooks/pages/DashBoard';
 import Analytics from './hooks/pages/Analytics';
 import Login from './hooks/pages/Login';
+import Register from './hooks/pages/Register';
+import HomePage from './hooks/pages/HomePage';
 import TaskList from './components/tasks/TaskList';
 import TaskForm from './components/tasks/TaskForm';
-import Layout from './components/layout/Layout'; // Ajoutez cette ligne
+import Layout from './components/layout/Layout';
 
 // Styles
 import './styles/App.css';
@@ -28,39 +30,58 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AppRoutes() {
+  const { isAuthenticated } = useContext(AuthContext);
+
   return (
-    <Layout>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-
-        <Route path="/" element={
-          <ProtectedRoute>
+    <Routes>
+      {/* Page d'accueil accessible à tous */}
+      <Route path="/" element={<HomePage />} />
+      
+      {/* Pages d'authentification */}
+      <Route path="/login" element={
+        isAuthenticated ? <Navigate to="/dashboard" /> : <Login />
+      } />
+      
+      <Route path="/register" element={
+        isAuthenticated ? <Navigate to="/dashboard" /> : <Register />
+      } />
+      
+      {/* Routes protégées avec layout */}
+      <Route path="/dashboard" element={
+        <ProtectedRoute>
+          <Layout>
             <Dashboard />
-          </ProtectedRoute>
-        } />
+          </Layout>
+        </ProtectedRoute>
+      } />
 
-        <Route path="/analytics" element={
-          <ProtectedRoute>
+      <Route path="/analytics" element={
+        <ProtectedRoute>
+          <Layout>
             <Analytics />
-          </ProtectedRoute>
-        } />
+          </Layout>
+        </ProtectedRoute>
+      } />
 
-        <Route path="/tasks/new" element={
-          <ProtectedRoute>
+      <Route path="/tasks/new" element={
+        <ProtectedRoute>
+          <Layout>
             <TaskForm />
-          </ProtectedRoute>
-        } />
+          </Layout>
+        </ProtectedRoute>
+      } />
 
-        <Route path="/tasks" element={
-          <ProtectedRoute>
+      <Route path="/tasks" element={
+        <ProtectedRoute>
+          <Layout>
             <TaskList /> 
-          </ProtectedRoute>
-        } />
+          </Layout>
+        </ProtectedRoute>
+      } />
 
-        {/* Redirect to login for unknown routes */}
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    </Layout>
+      {/* Redirect to home for unknown routes */}
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }
 

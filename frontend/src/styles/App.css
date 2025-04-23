@@ -153,7 +153,7 @@ button {
 }
 
 .sidebar {
-  width: 80px;
+  width: 280;
   background: var(--bg-sidebar);
   color: var(--gray-300);
   padding: 1.75rem 1.25rem;
@@ -168,23 +168,14 @@ button {
   transition: width 0.3s ease-in-out;
 }
 
-.sidebar:hover {
-  width: 280px;
-}
-
 .main-content {
   flex: 1;
-  margin-left: 80px;
+  margin-left: 250px;
   padding: 2.5rem;
   max-width: calc(100% - 80px);
   background: linear-gradient(135deg, var(--bg-main) 0%, rgba(15, 23, 42, 0.95) 100%);
   min-height: 100vh;
   transition: margin-left 0.3s ease-in-out, max-width 0.3s ease-in-out;
-}
-
-.sidebar:hover + .main-content {
-  margin-left: 280px;
-  max-width: calc(100% - 280px);
 }
 
 .sidebar-header {
@@ -1559,25 +1550,6 @@ input:checked + .toggle-slider:before {
   color: var(--gray-400);
   font-size: 0.9375rem;
   line-height: 1.6;
-}
-
-/* Amélioration des scrollbars pour une apparence premium */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--gray-900);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--gray-700);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gray-600);
 }
 
 /* Styles de focus accessibles */

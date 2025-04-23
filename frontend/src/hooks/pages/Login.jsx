@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { loginUser } from '../../api/loginService';
 
@@ -12,7 +12,6 @@ const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Dans handleSubmit de Login.jsx
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -20,15 +19,13 @@ const Login = () => {
     
     try {
       const response = await loginUser({ username, password });
-      console.log('Réponse de login:', response);
       
-      // Problème résolu: passage des bonnes données à login()
       login({
         ...response.user,
         token: response.token
       });
       
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
       setError('Nom d\'utilisateur ou mot de passe invalide');
@@ -38,52 +35,52 @@ const Login = () => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '100px auto', padding: '20px', boxShadow: '0 0 10px rgba(0,0,0,0.1)', borderRadius: '8px' }}>
-      <h1>Login</h1>
-      
-      {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
-      
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            style={{ display: 'block', width: '100%', padding: '8px', marginTop: '5px' }}
-            required
-          />
-        </div>
+    <div className="auth-container">
+      <div className="auth-box login">
+        <Link to="/" className="back-to-home">
+          ← Retour à l'accueil
+        </Link>
         
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ display: 'block', width: '100%', padding: '8px', marginTop: '5px' }}
-            required
-          />
-        </div>
+        <h1>Connexion</h1>
         
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          style={{ 
-            background: '#4361ee', 
-            color: 'white', 
-            border: 'none', 
-            padding: '10px 15px', 
-            borderRadius: '4px',
-            cursor: 'pointer',
-            width: '100%'
-          }}
-        >
-          {isLoading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
+        {error && <div className="error-message">{error}</div>}
+        
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Nom d'utilisateur</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="password">Mot de passe</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          
+          <button 
+            type="submit" 
+            className="btn-primary full-width"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Connexion en cours...' : 'Se connecter'}
+          </button>
+        </form>
+        
+        <div className="auth-footer">
+          Pas encore de compte ? <Link to="/register">S'inscrire</Link>
+        </div>
+      </div>
     </div>
   );
 };
