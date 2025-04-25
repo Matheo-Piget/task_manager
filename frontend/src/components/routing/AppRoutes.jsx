@@ -19,9 +19,7 @@ const AppRoutes = () => {
       {/* Routes publiques */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      
-      {/* Route de redirection par défaut */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<HomePage />} />
       
       {/* Routes protégées avec layout */}
       <Route path="/dashboard" element={

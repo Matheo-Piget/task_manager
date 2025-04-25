@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import './styles/App.css';
 import AuthProvider from './context/AuthContext';
 import AppRoutes from './components/routing/AppRoutes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './styles/index.css';
 
 function App() {
   // Intercepteur d'erreurs global

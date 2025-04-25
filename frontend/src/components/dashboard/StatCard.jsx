@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from '../common/Icon';
+import Icon from '../common/Icon';
 
 const StatCard = ({ title, value, percentage, icon, color }) => {
   return (

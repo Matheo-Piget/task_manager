@@ -1,0 +1,244 @@
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--gray-300);
+}
+
+.form-group input, 
+.form-group textarea,
+.form-group select,
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-input);
+  border: 1px solid var(--gray-700);
+  border-radius: var(--border-radius);
+  color: var(--gray-200);
+  font-size: 0.9375rem;
+  transition: var(--transition-base);
+}
+
+.form-group input:focus, 
+.form-group textarea:focus,
+.form-group select:focus,
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(123, 92, 240, 0.1);
+  outline: none;
+}
+
+.form-group input::placeholder, 
+.form-group textarea::placeholder,
+.form-control::placeholder {
+  color: var(--gray-600);
+}
+
+.form-helper {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--gray-500);
+}
+
+.form-error {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--danger-color);
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.form-check-input {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-right: 0.5rem;
+  appearance: none;
+  background-color: var(--bg-input);
+  border: 1px solid var(--gray-700);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23fff'%3E%3Cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3E%3C/svg%3E");
+  background-size: 75%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.form-check-label {
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23adb5bd' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+}
+
+.input-group {
+  display: flex;
+  position: relative;
+}
+
+.input-group .form-control {
+  flex: 1;
+}
+
+.input-group-prepend, 
+.input-group-append {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--gray-700);
+  color: var(--gray-400);
+  font-size: 0.9375rem;
+}
+
+.input-group-prepend {
+  border-right: none;
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
+}
+
+.input-group-append {
+  border-left: none;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+}
+
+.input-group .form-control:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input-group .form-control:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Login specific */
+.login-container, .auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-main);
+  padding: 1rem;
+}
+
+.login-form-container, .auth-box {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--bg-card);
+  border-radius: var(--border-radius-lg);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.login-form-container h1, .auth-box h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--gray-200);
+  text-align: center;
+}
+
+.login-links, .auth-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.login-links a, .auth-footer a {
+  color: var(--primary-light);
+}
+
+.login-links a:hover, .auth-footer a:hover {
+  text-decoration: underline;
+}
+
+.back-to-home {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  color: var(--gray-400);
+  font-size: 0.9rem;
+  transition: var(--transition-base);
+}
+
+.back-to-home:hover {
+  color: var(--primary-light);
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.error-message {
+  text-align: center;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--danger-color);
+}
+
+/* Form responsiveness */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .login-form-container, .auth-box {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Task filters */
+.task-filters {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Analytics chart controls */
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.chart-header select {
+  width: auto;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}

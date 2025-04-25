@@ -1,0 +1,70 @@
+.dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .dashboard h1 {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gray-100);
+  }
+  
+  .tasks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .analytics-page h1 {
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gray-100);
+  }
+  
+  .productivity-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  
+  .task-list-page h1 {
+    margin-bottom: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gray-100);
+  }
+  
+  .task-form {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .task-form h2 {
+    margin-bottom: 2rem;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--gray-100);
+  }
+  
+  @media (max-width: 992px) {
+    .productivity-metrics {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .productivity-metrics {
+      grid-template-columns: 1fr;
+    }
+    
+    .task-form {
+      padding: 1.5rem;
+    }
+  }

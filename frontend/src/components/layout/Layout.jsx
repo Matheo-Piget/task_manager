@@ -25,13 +25,15 @@ const Layout = ({ children }) => {
         <div className="sidebar-header">
           <div className="sidebar-logo">TaskManager</div>
         </div>
-        
+
         <ul className="nav-list">
           <li className="nav-item">
-            <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>
-              <span className="nav-icon"><Icon name="home" /></span>
-              Dashboard
-            </Link>
+            <li className="nav-item">
+              <Link to="/dashboard" className={`nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`}>
+                <span className="nav-icon"><Icon name="home" /></span>
+                Dashboard
+              </Link>
+            </li>
           </li>
           <li className="nav-item">
             <Link to="/tasks" className={`nav-link ${location.pathname === '/tasks' ? 'active' : ''}`}>
@@ -52,7 +54,7 @@ const Layout = ({ children }) => {
             </Link>
           </li>
         </ul>
-        
+
         <div className="user-profile">
           {user && (
             <div className="profile-link">
@@ -69,7 +71,7 @@ const Layout = ({ children }) => {
           )}
         </div>
       </aside>
-      
+
       <main className="main-content">
         {children}
       </main>
