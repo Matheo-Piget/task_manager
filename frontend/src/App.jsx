@@ -1,95 +1,31 @@
-import React, { useContext } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthContext } from './context/AuthContext';
-import AuthProvider from './context/AuthContext';
-import Dashboard from './hooks/pages/DashBoard';
-import Analytics from './hooks/pages/Analytics';
-import Login from './hooks/pages/Login';
-import Register from './hooks/pages/Register';
-import HomePage from './hooks/pages/HomePage';
-import TaskList from './components/tasks/TaskList';
-import TaskForm from './components/tasks/TaskForm';
-import Layout from './components/layout/Layout';
-
-// Styles
+import React, { useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import './styles/App.css';
-
-// Protected route component
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useContext(AuthContext);
-
-  if (loading) {
-    return <div className="loading">Loading...</div>;
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
-
-  return children;
-};
-
-function AppRoutes() {
-  const { isAuthenticated } = useContext(AuthContext);
-
-  return (
-    <Routes>
-      {/* Page d'accueil accessible à tous */}
-      <Route path="/" element={<HomePage />} />
-      
-      {/* Pages d'authentification */}
-      <Route path="/login" element={
-        isAuthenticated ? <Navigate to="/dashboard" /> : <Login />
-      } />
-      
-      <Route path="/register" element={
-        isAuthenticated ? <Navigate to="/dashboard" /> : <Register />
-      } />
-      
-      {/* Routes protégées avec layout */}
-      <Route path="/dashboard" element={
-        <ProtectedRoute>
-          <Layout>
-            <Dashboard />
-          </Layout>
-        </ProtectedRoute>
-      } />
-
-      <Route path="/analytics" element={
-        <ProtectedRoute>
-          <Layout>
-            <Analytics />
-          </Layout>
-        </ProtectedRoute>
-      } />
-
-      <Route path="/tasks/new" element={
-        <ProtectedRoute>
-          <Layout>
-            <TaskForm />
-          </Layout>
-        </ProtectedRoute>
-      } />
-
-      <Route path="/tasks" element={
-        <ProtectedRoute>
-          <Layout>
-            <TaskList /> 
-          </Layout>
-        </ProtectedRoute>
-      } />
-
-      {/* Redirect to home for unknown routes */}
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
-  );
-}
+import AuthProvider from './context/AuthContext';
+import AppRoutes from './components/routing/AppRoutes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
+  // Intercepteur d'erreurs global
+  useEffect(() => {
+    const handleGlobalError = (event) => {
+      console.error('Global error caught:', event.error);
+      // Vous pourriez ajouter une notification ici
+    };
+
+    window.addEventListener('error', handleGlobalError);
+    
+    return () => {
+      window.removeEventListener('error', handleGlobalError);
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <BrowserRouter>
         <AppRoutes />
+        <ToastContainer position="bottom-right" />
       </BrowserRouter>
     </AuthProvider>
   );

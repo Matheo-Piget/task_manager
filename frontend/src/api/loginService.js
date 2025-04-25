@@ -1,11 +1,14 @@
-import apiClient from './authService'; // Import the configured axios instance
+import { publicApiClient, apiClient } from './api-client';
 
 export const loginUser = async (credentials) => {
   try {
-    const response = await apiClient.post('/auth/login', credentials);
+    // Utiliser l'API publique pour la connexion
+    const response = await publicApiClient.post('/auth/login', credentials);
+    
     // Store token in localStorage
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
     }
     return response.data;
   } catch (error) {
@@ -16,7 +19,8 @@ export const loginUser = async (credentials) => {
 
 export const registerUser = async (userData) => {
   try {
-    const response = await apiClient.post('/auth/register', userData);
+    // Utiliser l'API publique pour l'inscription
+    const response = await publicApiClient.post('/auth/register', userData);
     return response.data;
   } catch (error) {
     console.error('Registration error:', error);
@@ -26,10 +30,21 @@ export const registerUser = async (userData) => {
 
 export const getUser = async () => {
   try {
+    // Utiliser l'API authentifiée pour récupérer les infos utilisateur
     const response = await apiClient.get('/auth/me');
     return response.data;
   } catch (error) {
     console.error('Get user error:', error);
     throw error;
+  }
+};
+
+export const verifyToken = async () => {
+  try {
+    const response = await apiClient.post('/auth/verify');
+    return response.data.valid;
+  } catch (error) {
+    console.error('Token verification error:', error);
+    return false;
   }
 };

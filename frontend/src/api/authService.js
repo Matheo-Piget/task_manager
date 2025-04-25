@@ -1,40 +1,73 @@
-import axios from 'axios';
+import React, { createContext, useState, useEffect } from 'react';
+import { getUser } from '../api/loginService';
 
-const API_URL = 'http://localhost:8080/api';
+export const AuthContext = createContext();
 
-const apiClient = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-// Add interceptor to add token to all requests
-apiClient.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+  // Check if user is already logged in on load
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      
+      if (token && storedUser) {
+        try {
+          // Vérifier que le token est valide en appelant l'API
+          const userData = await getUser();
+          setUser(userData);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error('Authentication error:', error);
+          // Si erreur, nettoyer le stockage local
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
+      }
+      
+      setLoading(false);
+    };
+    
+    checkAuth();
+  }, []);
+
+  const login = (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+    localStorage.setItem('user', JSON.stringify(userData));
+    
+    // Store token if it exists in the response
+    if (userData && userData.token) {
+      localStorage.setItem('token', userData.token);
     }
-    return config;
-  },
-  error => {
-    return Promise.reject(error);
-  }
-);
+  };
 
-// Add response interceptor for error handling
-apiClient.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response && error.response.status === 401) {
-      // Handle unauthorized errors (e.g., expired token)
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
+  const logout = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+  };
 
-export default apiClient;
+  return (
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated, 
+      loading, 
+      login, 
+      logout 
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export default AuthProvider;

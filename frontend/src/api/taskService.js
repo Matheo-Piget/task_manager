@@ -1,79 +1,51 @@
-import apiClient from './authService'; // Import the configured axios instance
+import { apiClient } from './api-client';
 
-export const getTasks = async (filters = {}) => {
+export const getTags = async () => {
   try {
-    const response = await apiClient.get('/tasks', { params: filters });
+    const response = await apiClient.get('/tags');
     return response.data || [];
   } catch (error) {
-    console.error('Error fetching tasks:', error);
+    console.error('Error fetching tags:', error);
     return [];
   }
 };
 
-export const getTaskById = async (taskId) => {
+export const getTagById = async (id) => {
   try {
-    const response = await apiClient.get(`/tasks/${taskId}`);
+    const response = await apiClient.get(`/tags/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching task:', error);
+    console.error(`Error fetching tag ${id}:`, error);
     throw error;
   }
 };
 
-export const createTask = async (taskData) => {
+export const createTag = async (tagData) => {
   try {
-    const response = await apiClient.post('/tasks', taskData);
+    const response = await apiClient.post('/tags', tagData);
     return response.data;
   } catch (error) {
-    console.error('Error creating task:', error);
+    console.error('Error creating tag:', error);
     throw error;
   }
 };
 
-export const updateTask = async (taskId, taskData) => {
+export const updateTag = async (id, tagData) => {
   try {
-    const response = await apiClient.put(`/tasks/${taskId}`, taskData);
+    const response = await apiClient.put(`/tags/${id}`, tagData);
     return response.data;
   } catch (error) {
-    console.error('Error updating task:', error);
+    console.error(`Error updating tag ${id}:`, error);
     throw error;
   }
 };
 
-export const deleteTask = async (taskId) => {
+export const deleteTag = async (id) => {
   try {
-    await apiClient.delete(`/tasks/${taskId}`);
+    await apiClient.delete(`/tags/${id}`);
     return true;
   } catch (error) {
-    console.error('Error deleting task:', error);
+    console.error(`Error deleting tag ${id}:`, error);
     throw error;
-  }
-};
-
-export const getTaskStatistics = async () => {
-  try {
-    const response = await apiClient.get('/tasks/statistics');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching task statistics:', error);
-    // Return some default data as a fallback
-    return {
-      totalTasks: 0,
-      completedTasks: 0,
-      overdueTasks: 0,
-      upcomingTasks: 0,
-      statusDistribution: {
-        TODO: 0,
-        IN_PROGRESS: 0,
-        DONE: 0,
-        ARCHIVED: 0
-      },
-      priorityDistribution: {
-        LOW: 0,
-        MEDIUM: 0,
-        HIGH: 0,
-        URGENT: 0
-      }
-    };
   }
 };

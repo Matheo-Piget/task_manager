@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../api/loginService';
+import { AuthContext } from '../../context/AuthContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -11,7 +11,7 @@ const Login = () => {
   
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -28,19 +28,29 @@ const Login = () => {
       navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
-      setError('Nom d\'utilisateur ou mot de passe invalide');
+      
+      // Messages d'erreur plus précis
+      if (err.response) {
+        if (err.response.status === 401) {
+          setError('Nom d\'utilisateur ou mot de passe incorrect');
+        } else if (err.response.status === 429) {
+          setError('Trop de tentatives de connexion. Veuillez réessayer plus tard.');
+        } else {
+          setError(`Erreur: ${err.response.data?.message || 'Impossible de se connecter'}`);
+        }
+      } else if (err.request) {
+        setError('Impossible de contacter le serveur. Vérifiez votre connexion.');
+      } else {
+        setError('Une erreur s\'est produite. Veuillez réessayer.');
+      }
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   return (
-    <div className="auth-container">
-      <div className="auth-box login">
-        <Link to="/" className="back-to-home">
-          ← Retour à l'accueil
-        </Link>
-        
+    <div className="login-container">
+      <div className="login-form-container">
         <h1>Connexion</h1>
         
         {error && <div className="error-message">{error}</div>}
@@ -70,15 +80,16 @@ const Login = () => {
           
           <button 
             type="submit" 
-            className="btn-primary full-width"
+            className="btn-primary" 
             disabled={isLoading}
           >
-            {isLoading ? 'Connexion en cours...' : 'Se connecter'}
+            {isLoading ? 'Connexion...' : 'Se connecter'}
           </button>
         </form>
         
-        <div className="auth-footer">
-          Pas encore de compte ? <Link to="/register">S'inscrire</Link>
+        <div className="login-links">
+          <a href="/register">Créer un compte</a>
+          <a href="/forgot-password">Mot de passe oublié?</a>
         </div>
       </div>
     </div>
