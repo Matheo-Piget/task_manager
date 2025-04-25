@@ -1,5 +1,6 @@
 package com.taskmanager.controller;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -22,11 +23,13 @@ import com.taskmanager.dto.TaskStatisticsDTO;
 import com.taskmanager.model.Task;
 import com.taskmanager.model.Task.Status;
 import com.taskmanager.repository.TaskRepository;
+import com.taskmanager.security.UserAuthenticationToken;
 import com.taskmanager.service.TaskService;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/api/tasks")
-@CrossOrigin(origins = "http://localhost:5173") // Permet les requêtes depuis le frontend
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class TaskController {
 
     @Autowired
@@ -35,50 +38,66 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
-    // ID utilisateur temporaire pour le développement
-    private static final Long TEMP_USER_ID = 1L; // Correspond à votre utilisateur 'admin'
-
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> tasks = taskService.getTasksByUserId(TEMP_USER_ID);
+    public ResponseEntity<List<Task>> getAllTasks(Authentication authentication) throws AccessDeniedException {
+        Long userId = getUserIdFromAuthentication(authentication);
+        List<Task> tasks = taskService.getTasksByUserId(userId);
         return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-        Task task = taskService.getTaskByIdAndUserId(id, TEMP_USER_ID);
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id, Authentication authentication) throws AccessDeniedException {
+        Long userId = getUserIdFromAuthentication(authentication);
+        Task task = taskService.getTaskByIdAndUserId(id, userId);
         return ResponseEntity.ok(task);
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        Task createdTask = taskService.createTask(task, TEMP_USER_ID);
+    public ResponseEntity<Task> createTask(@RequestBody Task task, Authentication authentication) throws AccessDeniedException {
+        Long userId = getUserIdFromAuthentication(authentication);
+        Task createdTask = taskService.createTask(task, userId);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(
             @PathVariable Long id,
-            @RequestBody Task task) {
-        Task updatedTask = taskService.updateTask(id, task, TEMP_USER_ID);
+            @RequestBody Task task,
+            Authentication authentication) throws AccessDeniedException {
+        Long userId = getUserIdFromAuthentication(authentication);
+        Task updatedTask = taskService.updateTask(id, task, userId);
         return ResponseEntity.ok(updatedTask);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        taskService.deleteTask(id, TEMP_USER_ID);
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id, Authentication authentication) throws AccessDeniedException {
+        Long userId = getUserIdFromAuthentication(authentication);
+        taskService.deleteTask(id, userId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<Task>> getTasksByStatus(@PathVariable Task.Status status) {
-        List<Task> tasks = taskService.getTasksByUserIdAndStatus(TEMP_USER_ID, status);
+    public ResponseEntity<List<Task>> getTasksByStatus(
+            @PathVariable Task.Status status,
+            Authentication authentication) throws AccessDeniedException {
+        Long userId = getUserIdFromAuthentication(authentication);
+        List<Task> tasks = taskService.getTasksByUserIdAndStatus(userId, status);
         return ResponseEntity.ok(tasks);
     }
 
     @GetMapping("/statistics")
-    public ResponseEntity<TaskStatisticsDTO> getTaskStatistics() {
-        TaskStatisticsDTO stats = taskService.getTaskStatistics(TEMP_USER_ID);
+    public ResponseEntity<TaskStatisticsDTO> getTaskStatistics(Authentication authentication) throws AccessDeniedException {
+        Long userId = getUserIdFromAuthentication(authentication);
+        TaskStatisticsDTO stats = taskService.getTaskStatistics(userId);
         return ResponseEntity.ok(stats);
+    }
+    
+    private Long getUserIdFromAuthentication(Authentication authentication) throws AccessDeniedException {
+        if (authentication != null && authentication instanceof UserAuthenticationToken) {
+            return ((UserAuthenticationToken) authentication).getUserId();
+        }
+        
+        // Instead of a hardcoded fallback, throw an appropriate exception
+        throw new AccessDeniedException("Authentication required");
     }
 }

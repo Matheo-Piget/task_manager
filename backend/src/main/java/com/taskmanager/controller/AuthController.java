@@ -1,11 +1,11 @@
 package com.taskmanager.controller;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,27 +14,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.taskmanager.model.User;
+import com.taskmanager.security.JwtTokenProvider;
+import com.taskmanager.security.UserAuthenticationToken;
 import com.taskmanager.service.AuthService;
-
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class AuthController {
 
     @Autowired
     private AuthService authService;
-
-    private static final String SECRET_KEY = "thisIsASecretKeyThatShouldBeVeryLongAndComplex";
+    
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         User registeredUser = authService.registerUser(user);
 
-        String token = generateJwtToken(registeredUser);
+        String token = tokenProvider.generateToken(registeredUser);
 
         Map<String, Object> response = new HashMap<>();
         response.put("user", registeredUser);
@@ -48,15 +48,10 @@ public class AuthController {
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
 
-        System.out.println("Tentative de connexion : " + username);
-        System.out.println("Mot de passe fourni : " + password);
-    
-
         User user = authService.authenticateUser(username, password);
 
         if (user != null) {
-            System.out.println("Utilisateur trouvé : " + user.getUsername());
-            String token = generateJwtToken(user);
+            String token = tokenProvider.generateToken(user);
             
             Map<String, Object> response = new HashMap<>();
             response.put("user", user);
@@ -64,35 +59,17 @@ public class AuthController {
             
             return ResponseEntity.ok(response);
         } else {
-            System.out.println("ÉCHEC : Utilisateur non trouvé ou mot de passe incorrect");
-            return ResponseEntity.badRequest().body("Identifiants invalides");
+            throw new BadCredentialsException("Invalid username or password");
         }
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser() {
-        // This is a mock implementation for now
-        // In a real app, you would extract user ID from JWT token and load user data
-        User tempUser = new User();
-        tempUser.setId(1L);
-        tempUser.setUsername("admin");
-        tempUser.setEmail("admin@example.com");
-        tempUser.setFirstName("Admin");
-        tempUser.setLastName("User");
-
-        return ResponseEntity.ok(tempUser);
-    }
-
-    private String generateJwtToken(User user) {
-        long now = System.currentTimeMillis();
-    
-        return Jwts.builder()
-                .setSubject(user.getUsername())
-                .claim("userId", user.getId())
-                .claim("email", user.getEmail())
-                .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + 24 * 60 * 60 * 1000)) // 24 hours validity
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
-                .compact();
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        if (authentication instanceof UserAuthenticationToken) {
+            Long userId = ((UserAuthenticationToken) authentication).getUserId();
+            User user = authService.getUserById(userId);
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.badRequest().body("Not authenticated");
     }
 }

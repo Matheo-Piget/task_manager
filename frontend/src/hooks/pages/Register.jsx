@@ -52,7 +52,7 @@ const Register = () => {
         token: response.token
       });
       
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       console.error('Register error:', err);
       setError(err.response?.data || 'Une erreur s\'est produite lors de l\'inscription');

@@ -4,32 +4,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.taskmanager.exception.ResourceNotFoundException;
 import com.taskmanager.model.User;
 import com.taskmanager.repository.UserRepository;
 
 @Service
 public class AuthService {
-    
+
     @Autowired
     private UserRepository userRepository;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     public User registerUser(User user) {
-        // Encoder le mot de passe
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // Check if username or email already exists
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new IllegalArgumentException("Username is already taken");
+        }
         
-        // Sauvegarder l'utilisateur
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email is already in use");
+        }
+        
+        // Encode password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Save user
         return userRepository.save(user);
     }
-    
+
     public User authenticateUser(String username, String password) {
         User user = userRepository.findByUsername(username);
-        if (user != null && password.equals(user.getPassword())) {
-            System.out.println("Mot de passe correct pour l'utilisateur : " + user.getUsername());
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return user;
         }
         return null;
+    }
+    
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     }
 }

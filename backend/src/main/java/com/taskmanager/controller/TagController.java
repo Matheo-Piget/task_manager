@@ -14,7 +14,7 @@ import com.taskmanager.repository.TagRepository;
 
 @RestController
 @RequestMapping("/api/tags")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class TagController {
     
     @Autowired
