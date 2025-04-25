@@ -28,12 +28,10 @@ const Layout = ({ children }) => {
 
         <ul className="nav-list">
           <li className="nav-item">
-            <li className="nav-item">
-              <Link to="/dashboard" className={`nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`}>
-                <span className="nav-icon"><Icon name="home" /></span>
-                Dashboard
-              </Link>
-            </li>
+            <Link to="/dashboard" className={`nav-link ${location.pathname === '/dashboard' ? 'active' : ''}`}>
+              <span className="nav-icon"><Icon name="home" /></span>
+              Dashboard
+            </Link>
           </li>
           <li className="nav-item">
             <Link to="/tasks" className={`nav-link ${location.pathname === '/tasks' ? 'active' : ''}`}>

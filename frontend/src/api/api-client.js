@@ -1,4 +1,5 @@
 import axios from 'axios';
+import logger from '../utils/logger';
 
 const API_URL = 'http://localhost:8080/api';
 
@@ -25,6 +26,8 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
+    // Log la requête pour débogage
+    logger.logApiRequest(config.url, config.method, config.data);
     return config;
   },
   error => {
@@ -34,27 +37,22 @@ apiClient.interceptors.request.use(
 );
 
 // Intercepteur de réponse pour les requêtes authentifiées
+// Intercepteur de réponse pour les requêtes authentifiées
 apiClient.interceptors.response.use(
-  response => response,
+  response => {
+    // Log la réponse pour débogage
+    logger.logApiResponse(response.config.url, response.data);
+    return response;
+  },
   error => {
     if (error.response) {
       const { status } = error.response;
       
-      if (status === 401) {
-        console.log('Authentication expired or invalid. Redirecting to login...');
-        
-        // Ne pas rediriger si déjà sur /login ou /register
-        const currentPath = window.location.pathname;
-        if (currentPath !== '/login' && currentPath !== '/register') {
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          window.location = '/login';
-        }
-      } else if (status === 403) {
-        console.error('Access denied to this resource');
-      } else if (status >= 500) {
-        console.error('Server error:', error.response.data);
-      }
+      // Journaliser l'erreur sans rediriger
+      console.error(`API Error ${status}:`, error.response.data);
+      
+      // Uniquement pour le debugging, on renvoie juste l'erreur pour l'analyser
+      return Promise.reject(error);
     } else if (error.request) {
       console.error('No response received from server:', error.request);
     } else {

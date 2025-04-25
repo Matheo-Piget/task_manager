@@ -1,73 +1,84 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { getUser } from '../api/loginService';
+import { loginUser, getUser } from '../api/loginService';
+import { toast } from 'react-toastify';
 
-export const AuthContext = createContext();
+// Créer le contexte
+export const AuthContext = createContext(null);
 
-function AuthProvider({ children }) {
+// Créer le provider comme composant séparé
+const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check if user is already logged in on load
+  // Vérifier si l'utilisateur est déjà connecté au chargement
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      
-      if (token && storedUser) {
-        try {
-          // Vérifier que le token est valide en appelant l'API
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
           const userData = await getUser();
           setUser(userData);
           setIsAuthenticated(true);
-        } catch (error) {
-          console.error('Authentication error:', error);
-          // Si erreur, nettoyer le stockage local
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          setUser(null);
-          setIsAuthenticated(false);
         }
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+        // En cas d'erreur, supprimer les données d'authentification
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      } finally {
+        setLoading(false);
       }
-      
-      setLoading(false);
     };
-    
+
     checkAuth();
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(userData));
-    
-    // Store token if it exists in the response
-    if (userData && userData.token) {
-      localStorage.setItem('token', userData.token);
+  // Fonction de connexion
+  const login = async (credentials) => {
+    try {
+      const response = await loginUser(credentials);
+      const { token, user } = response;
+      
+      // Stocker le token dans localStorage
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      setUser(user);
+      setIsAuthenticated(true);
+      
+      toast.success('Login successful!');
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      setIsAuthenticated(false);
+      
+      let errorMessage = 'Login failed. Please try again.';
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      }
+      
+      toast.error(errorMessage);
+      return false;
     }
   };
 
+  // Fonction de déconnexion
   const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    toast.info('You have been logged out');
   };
 
+  // Fournir le contexte et les fonctions aux composants enfants
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      isAuthenticated, 
-      loading, 
-      login, 
-      logout 
-    }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
+// Export par défaut du provider
 export default AuthProvider;
