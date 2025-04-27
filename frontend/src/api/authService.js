@@ -1,9 +1,35 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { loginUser, getUser } from '../api/loginService';
+import { publicApiClient, apiClient } from './api-client';
 import { toast } from 'react-toastify';
+import React, { createContext, useState, useEffect } from 'react';
 
 // Créer le contexte
 export const AuthContext = createContext(null);
+
+// Définissez les fonctions d'authentification directement ici au lieu d'importer
+const loginUser = async (credentials) => {
+  try {
+    const response = await publicApiClient.post('/auth/login', credentials);
+    
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+    }
+    return response.data;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};
+
+const getUser = async () => {
+  try {
+    const response = await apiClient.get('/auth/me');
+    return response.data;
+  } catch (error) {
+    console.error('Get user error:', error);
+    throw error;
+  }
+};
 
 // Créer le provider comme composant séparé
 const AuthProvider = ({ children }) => {
@@ -23,7 +49,6 @@ const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error('Error checking authentication:', error);
-        // En cas d'erreur, supprimer les données d'authentification
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       } finally {
@@ -40,7 +65,6 @@ const AuthProvider = ({ children }) => {
       const response = await loginUser(credentials);
       const { token, user } = response;
       
-      // Stocker le token dans localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       

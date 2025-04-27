@@ -9,6 +9,7 @@
 @import './components/forms.css';
 @import './components/tables.css';
 @import './components/task-details.css';
+@import './components/project.css';
 
 /* Imports de layout */
 @import './layout/layout.css';
