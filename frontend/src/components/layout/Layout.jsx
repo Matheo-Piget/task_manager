@@ -40,11 +40,19 @@ const Layout = ({ children }) => {
             </Link>
           </li>
           <li className="nav-item">
+            <Link to="/projects" className={`nav-link ${location.pathname === '/projects' ? 'active' : ''}`}>
+              <i className="icon-projects"></i>
+              <span>Projets</span>
+            </Link>
+          </li>
+          <li className="nav-item">
             <Link to="/tasks/new" className={`nav-link ${location.pathname === '/tasks/new' ? 'active' : ''}`}>
               <span className="nav-icon">+</span>
               Create Task
             </Link>
           </li>
+
+
           <li className="nav-item">
             <Link to="/analytics" className={`nav-link ${location.pathname === '/analytics' ? 'active' : ''}`}>
               <span className="nav-icon"><Icon name="bar-chart-2" /></span>
@@ -54,19 +62,21 @@ const Layout = ({ children }) => {
         </ul>
 
         <div className="user-profile">
-          {user && (
-            <div className="profile-link">
-              <div className="avatar">
-                {user.firstName ? user.firstName.charAt(0) : 'U'}
-              </div>
-              <div className="profile-info">
-                <div className="profile-name">{user.firstName || 'User'}</div>
-                <button onClick={handleLogout} className="logout-button">
-                  <Icon name="log-out" /> Logout
-                </button>
-              </div>
+          {/* Lien vers le profil utilisateur */}
+          <Link to="/profile" className="profile-link">
+            <div className="avatar">
+              {user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U'}
             </div>
-          )}
+            <div className="user-info">
+              <span className="user-name">{user?.firstName || user?.username}</span>
+              <span className="user-role">Utilisateur</span>
+            </div>
+          </Link>
+          
+          <button onClick={logout} className="logout-button">
+            <i className="icon-logout"></i>
+            <span>Déconnexion</span>
+          </button>
         </div>
       </aside>
 

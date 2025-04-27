@@ -8,6 +8,7 @@ const ProjectList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -26,18 +27,29 @@ const ProjectList = () => {
   }, []);
 
   const getFilteredProjects = () => {
-    if (filter === 'all') return projects;
-    if (filter === 'active') return projects.filter(p => p.status === 'ACTIVE');
-    if (filter === 'completed') return projects.filter(p => p.status === 'COMPLETED');
-    if (filter === 'archived') return projects.filter(p => p.status === 'ARCHIVED');
-    return projects;
+    let filtered = projects;
+    
+    // Filtrer par statut
+    if (filter === 'active') filtered = filtered.filter(p => p.status === 'ACTIVE');
+    if (filter === 'completed') filtered = filtered.filter(p => p.status === 'COMPLETED');
+    if (filter === 'archived') filtered = filtered.filter(p => p.status === 'ARCHIVED');
+    
+    // Filtrer par recherche
+    if (searchTerm) {
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+    
+    return filtered;
   };
 
   const filteredProjects = getFilteredProjects();
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className="loading-container animate-spin">
         <div className="loading-spinner"></div>
         <p>Chargement des projets...</p>
       </div>
@@ -49,6 +61,12 @@ const ProjectList = () => {
       <div className="error-message">
         <Icon name="alert-circle" />
         <p>{error}</p>
+        <button 
+          className="btn-primary" 
+          onClick={() => window.location.reload()}
+        >
+          Réessayer
+        </button>
       </div>
     );
   }
@@ -93,7 +111,12 @@ const ProjectList = () => {
         </div>
         <div className="search-box">
           <Icon name="search" />
-          <input type="text" placeholder="Rechercher un projet..." />
+          <input 
+            type="text" 
+            placeholder="Rechercher un projet..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
       </div>
 
@@ -104,9 +127,9 @@ const ProjectList = () => {
           </div>
           <h3>Aucun projet trouvé</h3>
           <p>
-            {filter === 'all' 
+            {filter === 'all' && searchTerm === '' 
               ? "Vous n'avez pas encore créé de projet. Commencez par en créer un nouveau !" 
-              : "Aucun projet ne correspond à ce filtre."}
+              : "Aucun projet ne correspond à ces critères."}
           </p>
           <Link to="/projects/new" className="btn-primary">
             <Icon name="plus" /> Créer un projet
@@ -118,56 +141,18 @@ const ProjectList = () => {
             <div key={project.id} className="project-card">
               <div className="project-card-header">
                 <h3>{project.name}</h3>
-                <span className={`project-status ${project.status.toLowerCase()}`}>
+                <span className={`project-status ${project.status?.toLowerCase() || 'active'}`}>
                   {project.status === 'ACTIVE' ? 'Actif' : 
                    project.status === 'COMPLETED' ? 'Terminé' : 
-                   project.status === 'ARCHIVED' ? 'Archivé' : project.status}
+                   project.status === 'ARCHIVED' ? 'Archivé' : 'Actif'}
                 </span>
               </div>
               <div className="project-card-body">
                 <p className="project-description">{project.description || 'Aucune description'}</p>
-                <div className="project-meta">
-                  <div className="project-dates">
-                    <div className="project-date">
-                      <span className="date-label">Début:</span>
-                      <span className="date-value">
-                        {project.startDate ? new Date(project.startDate).toLocaleDateString('fr-FR') : 'Non défini'}
-                      </span>
-                    </div>
-                    <div className="project-date">
-                      <span className="date-label">Fin:</span>
-                      <span className="date-value">
-                        {project.endDate ? new Date(project.endDate).toLocaleDateString('fr-FR') : 'Non défini'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="project-progress">
-                    <div className="progress-label">
-                      <span>Progression</span>
-                      <span>{project.progress || 0}%</span>
-                    </div>
-                    <div className="progress-bar">
-                      <div 
-                        className="progress-fill" 
-                        style={{ width: `${project.progress || 0}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-                <div className="project-tasks">
-                  <div className="task-stat">
-                    <span className="task-stat-label">Total</span>
-                    <span className="task-stat-value">{project.totalTasks || 0}</span>
-                  </div>
-                  <div className="task-stat">
-                    <span className="task-stat-label">En cours</span>
-                    <span className="task-stat-value">{project.inProgressTasks || 0}</span>
-                  </div>
-                  <div className="task-stat">
-                    <span className="task-stat-label">Terminées</span>
-                    <span className="task-stat-value">{project.completedTasks || 0}</span>
-                  </div>
-                </div>
+                
+                
+                
+                
               </div>
               <div className="project-card-footer">
                 <Link to={`/projects/${project.id}`} className="btn-secondary">
