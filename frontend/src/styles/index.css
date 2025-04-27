@@ -8,6 +8,7 @@
 @import './components/cards.css';
 @import './components/forms.css';
 @import './components/tables.css';
+@import './components/task-details.css';
 
 /* Imports de layout */
 @import './layout/layout.css';

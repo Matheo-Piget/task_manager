@@ -10,6 +10,7 @@ import HomePage from '../../hooks/pages/HomePage';
 import Dashboard from '../../hooks/pages/DashBoard';
 import TaskForm from '../../components/tasks/TaskForm';
 import TaskList from '../../components/tasks/TaskList';
+import TaskDetail from '../../components/tasks/TaskDetail';
 import Analytics from '../../hooks/pages/Analytics';
 import NotFound from '../../hooks/pages/NotFound';
 
@@ -53,7 +54,15 @@ const AppRoutes = () => {
           </Layout>
         </ProtectedRoute>
       } />
-      
+
+      <Route path="/tasks/:id" element={
+        <ProtectedRoute>
+          <Layout>
+            <TaskDetail />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
       <Route path="/analytics" element={
         <ProtectedRoute>
           <Layout>
