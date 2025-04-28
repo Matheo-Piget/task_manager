@@ -143,11 +143,11 @@ const NotificationsDropdown = ({ onClose }) => {
       <div className="notifications-list">
         {notifications.map((notification) => (
           <Link 
-            key={notification.id} 
-            to={getNotificationLink(notification)}
-            className="notification-item"
-            onClick={() => handleMarkAsRead(notification.id, event)}
-          >
+  key={notification.id} 
+  to={getNotificationLink(notification)}
+  className="notification-item"
+  onClick={(event) => handleMarkAsRead(notification.id, event)}
+>
             <div className="notification-icon">
               <Icon name={getIconByType(notification.type)} />
             </div>

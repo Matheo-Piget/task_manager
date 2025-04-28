@@ -76,9 +76,9 @@ const ProjectList = () => {
       <div className="page-header">
         <h1>Mes Projets</h1>
         <div className="header-actions">
-          <Link to="/projects/new" className="btn-primary">
-            <Icon name="" /> Nouveau Projet
-          </Link>
+        <Link to="/projects/new" className="btn-primary">
+  <Icon name="folder-plus" /> Nouveau Projet
+</Link>
         </div>
       </div>
 
@@ -132,8 +132,8 @@ const ProjectList = () => {
               : "Aucun projet ne correspond à ces critères."}
           </p>
           <Link to="/projects/new" className="btn-primary">
-            <Icon name="" /> Créer un projet
-          </Link>
+  <Icon name="folder-plus" /> Créer un projet
+</Link>
         </div>
       ) : (
         <div className="projects-grid">
@@ -156,10 +156,10 @@ const ProjectList = () => {
               </div>
               <div className="project-card-footer">
                 <Link to={`/projects/${project.id}`} className="btn-secondary">
-                  <Icon name="" /> Voir
+                  <Icon name="eye" /> Voir
                 </Link>
                 <Link to={`/projects/${project.id}/edit`} className="btn-secondary">
-                  <Icon name="" /> Modifier
+                  <Icon name="edit-2" /> Modifier
                 </Link>
               </div>
             </div>

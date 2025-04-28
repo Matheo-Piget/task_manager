@@ -29,9 +29,9 @@ const TaskDetail = () => {
   const formatDate = (dateString) => {
     if (!dateString) return 'Non définie';
     const date = new Date(dateString);
-    return date.toLocaleString('fr-FR', { 
-      year: 'numeric', 
-      month: 'long', 
+    return date.toLocaleString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -70,7 +70,7 @@ const TaskDetail = () => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
       return;
     }
-    
+
     setIsDeleting(true);
     try {
       await deleteTask(id);
@@ -87,7 +87,7 @@ const TaskDetail = () => {
       <p>Chargement de la tâche...</p>
     </div>
   );
-  
+
   if (error) return (
     <div className="card error-card">
       <div className="card-body">
@@ -106,14 +106,14 @@ const TaskDetail = () => {
         </div>
         <div className="header-actions">
           <Link to={`/tasks/${id}/edit`} className="btn-secondary">
-            <Icon name="" /> Modifier
+            <Icon name="edit-2" /> Modifier
           </Link>
-          <button 
-            onClick={handleDelete} 
+          <button
+            onClick={handleDelete}
             className="btn-danger"
             disabled={isDeleting}
           >
-            <Icon name="" /> {isDeleting ? 'Suppression...' : 'Supprimer'}
+            <Icon name="trash-2" /> {isDeleting ? 'Suppression...' : 'Supprimer'}
           </button>
         </div>
       </div>
@@ -125,7 +125,7 @@ const TaskDetail = () => {
             {task.priority}
           </span>
         </div>
-        
+
         <div className="card-body">
           <div className="detail-section">
             <h3>Description</h3>
@@ -133,29 +133,29 @@ const TaskDetail = () => {
               {task.description || "Aucune description fournie"}
             </div>
           </div>
-          
+
           <div className="task-meta-grid">
             <div className="detail-section">
               <h3>Statut</h3>
               <div className="status-selector">
-                <div className={`status-option ${task.status === 'TODO' ? 'active' : ''}`} 
-                     onClick={() => handleStatusChange('TODO')}>
+                <div className={`status-option ${task.status === 'TODO' ? 'active' : ''}`}
+                  onClick={() => handleStatusChange('TODO')}>
                   <span className="status-dot todo"></span>
                   À faire
                 </div>
                 <div className={`status-option ${task.status === 'IN_PROGRESS' ? 'active' : ''}`}
-                     onClick={() => handleStatusChange('IN_PROGRESS')}>
+                  onClick={() => handleStatusChange('IN_PROGRESS')}>
                   <span className="status-dot in-progress"></span>
                   En cours
                 </div>
                 <div className={`status-option ${task.status === 'DONE' ? 'active' : ''}`}
-                     onClick={() => handleStatusChange('DONE')}>
+                  onClick={() => handleStatusChange('DONE')}>
                   <span className="status-dot done"></span>
                   Terminée
                 </div>
               </div>
             </div>
-            
+
             <div className="detail-section">
               <h3>Date d'échéance</h3>
               <div className="due-date-display">
@@ -164,7 +164,7 @@ const TaskDetail = () => {
               </div>
             </div>
           </div>
-          
+
           {task.tags && task.tags.length > 0 && (
             <div className="detail-section">
               <h3>Tags</h3>
@@ -178,11 +178,11 @@ const TaskDetail = () => {
             </div>
           )}
         </div>
-        
+
         <div className="card-footer">
-          <button onClick={() => navigate('/tasks')} className="btn-secondary">
-            <Icon name="" /> Retour à la liste
-          </button>
+        <button onClick={() => navigate('/tasks')} className="btn-secondary">
+          <Icon name="arrow-left" /> Retour à la liste
+        </button>
         </div>
       </div>
     </div>
