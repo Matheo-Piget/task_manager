@@ -1,0 +1,124 @@
+/* Styles pour la liste déroulante de notifications */
+.notifications-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 320px;
+    max-height: 500px;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: var(--z-popup);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform-origin: top right;
+    animation: fadeInScale 0.2s ease forwards;
+  }
+  
+  /* Page de notifications */
+  .notifications-page {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .notification-card {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.25rem;
+    border-radius: var(--border-radius-lg);
+    background-color: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    margin-bottom: 1rem;
+    transition: var(--transition-base);
+  }
+  
+  .notification-card.unread {
+    border-left: 3px solid var(--primary-color);
+    background-color: rgba(123, 92, 240, 0.05);
+  }
+  
+  .notification-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .notification-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background-color: rgba(123, 92, 240, 0.1);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 1rem;
+  }
+  
+  .notification-content {
+    flex: 1;
+  }
+  
+  .notification-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-200);
+  }
+  
+  .notification-content p {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.9375rem;
+    color: var(--gray-400);
+    line-height: 1.5;
+  }
+  
+  .notification-time {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-bottom: 0.5rem;
+  }
+  
+  .notification-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+  
+  .notification-mark-read {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  .notification-item:hover .notification-mark-read {
+    opacity: 1;
+  }
+  
+  .load-more {
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+  }
+  
+  .empty-state h3 {
+    margin: 1rem 0;
+    color: var(--gray-300);
+  }
+  
+  .empty-state p {
+    color: var(--gray-500);
+  }
+  
+  .empty-state svg {
+    color: var(--gray-600);
+    margin-bottom: 1rem;
+  }

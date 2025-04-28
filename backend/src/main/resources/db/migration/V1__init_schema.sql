@@ -53,6 +53,24 @@ CREATE TABLE task_tags (
     FOREIGN KEY (tag_id) REFERENCES tags(id)
 );
 
+CREATE TABLE notifications (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    read BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL,
+    user_id BIGINT NOT NULL,
+    task_id BIGINT,
+    project_id BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (task_id) REFERENCES tasks(id),
+    FOREIGN KEY (project_id) REFERENCES projects(id)
+);
+
+CREATE INDEX idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX idx_notifications_read ON notifications(read);
+
 -- Add indexes to foreign keys
 CREATE INDEX idx_tasks_user_id ON tasks(user_id);
 CREATE INDEX idx_tasks_project_id ON tasks(project_id);

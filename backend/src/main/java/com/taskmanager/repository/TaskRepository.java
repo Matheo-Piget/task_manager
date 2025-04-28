@@ -47,7 +47,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
         
         return distribution;
     }
-    
+
     List<Task> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     List<Task> findByUserIdAndStatus(Long userId, Status status);
@@ -83,11 +83,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             if (priority != null) { // Gérer les priorités nulles
                 Integer count = ((Number) result[1]).intValue();
                 distribution.put(priority, count);
-            }
+            } 
         }
         
         return distribution;
     }
 
     Long countByUserIdAndDueDateBefore(Long userId, LocalDateTime date);
+
+    List<Task> findByDueDateBetweenAndStatus(LocalDateTime now, LocalDateTime oneDayLater, Status todo); 
 }

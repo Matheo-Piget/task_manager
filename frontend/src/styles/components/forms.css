@@ -242,3 +242,9 @@ select {
   padding: 0.5rem 2rem 0.5rem 0.75rem;
   font-size: 0.875rem;
 }
+
+.analytics-metrics {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}

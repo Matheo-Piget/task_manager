@@ -16,6 +16,7 @@ import Analytics from '../../hooks/pages/Analytics';
 import NotFound from '../../hooks/pages/NotFound';
 import UserProfile from '../../hooks/pages/UserProfile';
 import ForgotPassword from '../../hooks/pages/ForgotPassword';
+import Notification from '../../hooks/pages/Notification';
 
 // Composants Projet
 import ProjectList from '../projects/ProjectList';
@@ -38,6 +39,14 @@ const AppRoutes = () => {
         <ProtectedRoute>
           <Layout>
             <Dashboard />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/notifications" element={
+        <ProtectedRoute>
+          <Layout>
+            <Notification />
           </Layout>
         </ProtectedRoute>
       } />

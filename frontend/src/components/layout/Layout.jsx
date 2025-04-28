@@ -1,8 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import Icon from '../common/Icon';
 import NotificationsDropdown from '../common/NotificationDropDown';
+import { getUnreadCount } from '../../api/notificationService';
 
 const Layout = ({ children }) => {
   const { user, logout } = useContext(AuthContext);
@@ -10,27 +11,24 @@ const Layout = ({ children }) => {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0); // Déplacé ici à l'intérieur du composant
 
-  const mockNotifications = [
-    {
-      icon: 'check-circle',
-      title: 'Tâche terminée',
-      message: 'Vous avez terminé la tâche "Mise à jour du dashboard"',
-      time: 'Il y a 10 minutes'
-    },
-    {
-      icon: 'alert-circle',
-      title: 'Rappel',
-      message: 'La tâche "Finaliser le rapport" est prévue pour demain',
-      time: 'Il y a 30 minutes'
-    },
-    {
-      icon: 'message-square',
-      title: 'Nouveau commentaire',
-      message: 'Alex a commenté sur la tâche "Refonte du site web"',
-      time: 'Il y a 2 heures'
-    }
-  ];
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const count = await getUnreadCount();
+        setUnreadCount(count);
+      } catch (error) {
+        console.error('Failed to fetch unread notifications count', error);
+      }
+    };
+
+    fetchUnreadCount();
+    // Mettre à jour le compteur toutes les minutes
+    const interval = setInterval(fetchUnreadCount, 60000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -69,21 +67,21 @@ const Layout = ({ children }) => {
               <span>Tableau de bord</span>
             </Link>
           </li>
-          
+
           <li className="nav-item">
             <Link to="/tasks" className={`nav-link ${location.pathname === '/tasks' ? 'active' : ''}`}>
               <Icon name="check-square" />
               <span>Tâches</span>
             </Link>
           </li>
-          
+
           <li className="nav-item">
             <Link to="/projects" className={`nav-link ${location.pathname === '/projects' ? 'active' : ''}`}>
               <Icon name="folder" />
               <span>Projets</span>
             </Link>
           </li>
-          
+
           <li className="nav-item">
             <Link to="/analytics" className={`nav-link ${location.pathname === '/analytics' ? 'active' : ''}`}>
               <Icon name="bar-chart-2" />
@@ -92,14 +90,14 @@ const Layout = ({ children }) => {
           </li>
 
           <li className="nav-section">Actions rapides</li>
-          
+
           <li className="nav-item">
             <Link to="/tasks/new" className={`nav-link ${location.pathname === '/tasks/new' ? 'active' : ''}`}>
               <Icon name="plus-circle" />
               <span>Nouvelle tâche</span>
             </Link>
           </li>
-          
+
           <li className="nav-item">
             <Link to="/projects/new" className={`nav-link ${location.pathname === '/projects/new' ? 'active' : ''}`}>
               <Icon name="folder-plus" />
@@ -116,12 +114,12 @@ const Layout = ({ children }) => {
             <div className="user-info">
               <span className="user-name">{user?.firstName || user?.username}</span>
               <span className="user-role">
-                <Icon name="user" size="0.8em" /> 
+                <Icon name="user" size="0.8em" />
                 Utilisateur
               </span>
             </div>
           </Link>
-          
+
           <button onClick={handleLogout} className="logout-button">
             <Icon name="log-out" />
             <span>Déconnexion</span>
@@ -135,30 +133,29 @@ const Layout = ({ children }) => {
             <Icon name="search" />
             <input type="text" placeholder="Rechercher..." />
           </div>
-          
+
           <div className="header-actions">
             <div style={{ position: 'relative' }}>
-              <button 
-                className="header-button" 
+              <button
+                className="header-button"
                 onClick={toggleNotifications}
                 aria-label="Notifications"
               >
                 <Icon name="bell" />
-                <span className="notification-badge">3</span>
+                {unreadCount > 0 && (
+                  <span className="notification-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>
+                )}
               </button>
-              
+
               {showNotifications && (
-                <NotificationsDropdown 
-                  notifications={mockNotifications} 
-                  onClose={closeNotifications} 
-                />
+                <NotificationsDropdown onClose={closeNotifications} />
               )}
             </div>
-            
+
             <button className="header-button" aria-label="Aide">
               <Icon name="help-circle" />
             </button>
-            
+
             <Link to="/profile" className="header-profile">
               <div className="avatar-small">
                 {user?.firstName?.charAt(0) || user?.username?.charAt(0) || 'U'}
@@ -166,7 +163,7 @@ const Layout = ({ children }) => {
             </Link>
           </div>
         </header>
-        
+
         <div className="content-wrapper">
           {children}
         </div>
