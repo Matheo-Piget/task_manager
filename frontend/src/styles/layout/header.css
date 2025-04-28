@@ -73,20 +73,60 @@
     gap: 1rem;
   }
 
-
-/* Barre de recherche */
-.header-search {
-  position: relative;
-  flex: 1; /* Prend tout l'espace disponible */
-  background-color: var(--bg-input);
-  border-radius: var(--border-radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 0.5rem 1rem;
-  display: flex;
-  align-items: center;
-  transition: var(--transition-smooth);
-  margin-right: 1rem; /* Espace entre la barre de recherche et les boutons */
-}
+  .top-header {
+    display: flex;
+    align-items: center;
+    border-radius: var(--border-radius-lg);
+    padding: 0.75rem 1.5rem;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: 70px;
+  }
+  
+  /* Barre de recherche */
+  .header-search {
+    position: relative;
+    flex: 1;
+    max-width: 500px;
+    background-color: var(--bg-input);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    transition: var(--transition-smooth);
+    margin-right: 1.5rem;
+  }
+  
+  /* Boutons d'en-tête */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+  
+  .header-button {
+    position: relative;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background-color: var(--bg-input);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--gray-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-base);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header-button:hover {
+    background-color: rgba(123, 92, 240, 0.15);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
 
 .header-search:focus-within {
   border-color: var(--primary-color);
@@ -109,34 +149,6 @@
 
 .header-search input::placeholder {
   color: var(--gray-600);
-}
-
-/* Boutons d'en-tête */
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-left: auto; /* Espace entre la barre de recherche et les boutons */
-}
-
-.header-button {
-  position: relative;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  background-color: var(--bg-input);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  color: var(--gray-400);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition-base);
-}
-
-.header-button:hover {
-  background-color: rgba(123, 92, 240, 0.1);
-  color: var(--primary-color);
-  transform: translateY(-2px);
 }
 
 .notification-badge {

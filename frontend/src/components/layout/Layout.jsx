@@ -1,4 +1,4 @@
-import React, { useContext , useState} from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import Icon from '../common/Icon';
@@ -9,6 +9,7 @@ const Layout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
   const mockNotifications = [
     {
@@ -38,19 +39,27 @@ const Layout = ({ children }) => {
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
-  }
+  };
+
   const closeNotifications = () => {
     setShowNotifications(false);
   };
 
+  const toggleSidebar = () => {
+    setSidebarExpanded(!sidebarExpanded);
+  };
+
   return (
     <div className="app-container">
-      <aside className="sidebar">
+      <aside className={`sidebar ${sidebarExpanded ? 'expanded' : ''}`}>
         <div className="sidebar-header">
           <Link to="/dashboard" className="sidebar-logo">
             <Icon name="trello" size="1.5em" />
             <span>TaskManager</span>
           </Link>
+          <button className="menu-toggle" onClick={toggleSidebar}>
+            <Icon name={sidebarExpanded ? "x" : "menu"} />
+          </button>
         </div>
 
         <ul className="nav-list">
@@ -132,6 +141,7 @@ const Layout = ({ children }) => {
               <button 
                 className="header-button" 
                 onClick={toggleNotifications}
+                aria-label="Notifications"
               >
                 <Icon name="bell" />
                 <span className="notification-badge">3</span>
@@ -140,12 +150,12 @@ const Layout = ({ children }) => {
               {showNotifications && (
                 <NotificationsDropdown 
                   notifications={mockNotifications} 
-                  onClose={() => setShowNotifications(false)} 
+                  onClose={closeNotifications} 
                 />
               )}
             </div>
             
-            <button className="header-button">
+            <button className="header-button" aria-label="Aide">
               <Icon name="help-circle" />
             </button>
             
