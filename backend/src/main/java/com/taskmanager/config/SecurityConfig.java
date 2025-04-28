@@ -36,7 +36,7 @@ public class SecurityConfig {
             .csrf().disable()
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
-            .antMatchers("/api/auth/**", "/error", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+            .antMatchers("/api/auth/**", "/api/analytics/**", "/error", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
             .antMatchers("/api/**").authenticated()
             .anyRequest().authenticated()
             .and()

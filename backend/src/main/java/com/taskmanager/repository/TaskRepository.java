@@ -47,6 +47,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
         
         return distribution;
     }
+    
+    List<Task> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     List<Task> findByUserIdAndStatus(Long userId, Status status);
 

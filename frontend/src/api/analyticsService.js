@@ -1,79 +1,64 @@
-// Ce fichier contient des fonctions pour récupérer des données d'analyse fictives
+import { apiClient } from './api-client';
+import logger from '../utils/logger';
 
+/**
+ * Récupère les tendances de complétion des tâches sur une période donnée
+ * @param {string} timeRange - Période ('week', 'month', 'quarter', 'year')
+ * @returns {Promise<Array>} Données de tendance
+ */
 export const getCompletionTrends = async (timeRange) => {
   try {
-    // Pour le développement, retourne des données fictives
-    return [
-      { date: '2025-03-15', completed: 3, added: 5 },
-      { date: '2025-03-16', completed: 2, added: 1 },
-      { date: '2025-03-17', completed: 4, added: 2 },
-      { date: '2025-03-18', completed: 1, added: 3 },
-      { date: '2025-03-19', completed: 5, added: 2 },
-      { date: '2025-03-20', completed: 3, added: 4 },
-      { date: '2025-03-21', completed: 2, added: 1 }
-    ];
+    logger.debug(`Fetching completion trends for ${timeRange}`);
+    const response = await apiClient.get(`/analytics/completion-trends?period=${timeRange}`);
+    return response.data;
   } catch (error) {
-    console.error('Error fetching completion trends:', error);
+    logger.error('Error fetching completion trends:', error);
     throw error;
   }
 };
 
+/**
+ * Récupère les métriques de productivité
+ * @returns {Promise<Object>} Métriques de productivité
+ */
 export const getProductivityMetrics = async () => {
   try {
-    // Données fictives pour le développement
-    return {
-      completionRate: 75,
-      averageCompletionTime: 2.3,
-      tasksCompletedThisWeek: 12,
-      overdueTasks: 3
-    };
+    logger.debug('Fetching productivity metrics');
+    const response = await apiClient.get('/analytics/productivity');
+    return response.data;
   } catch (error) {
-    console.error('Error fetching productivity metrics:', error);
+    logger.error('Error fetching productivity metrics:', error);
     throw error;
   }
 };
 
+/**
+ * Récupère la distribution des tâches selon le type spécifié
+ * @param {string} type - Type de distribution ('status', 'priority', 'project')
+ * @returns {Promise<Object>} Distribution des tâches
+ */
 export const getTaskDistribution = async (type) => {
   try {
-    // Données fictives selon le type
-    if (type === 'status') {
-      return {
-        TODO: 5,
-        IN_PROGRESS: 3,
-        DONE: 8,
-        ARCHIVED: 2
-      };
-    } else if (type === 'priority') {
-      return {
-        LOW: 4,
-        MEDIUM: 7,
-        HIGH: 5,
-        URGENT: 2
-      };
-    } else {
-      return {
-        'Project A': 6,
-        'Project B': 4,
-        'Project C': 8
-      };
-    }
+    logger.debug(`Fetching task distribution by ${type}`);
+    const response = await apiClient.get(`/analytics/distribution?type=${type}`);
+    return response.data;
   } catch (error) {
-    console.error('Error fetching task distribution:', error);
+    logger.error('Error fetching task distribution:', error);
     throw error;
   }
 };
 
+/**
+ * Récupère le taux de complétion par tags
+ * @returns {Promise<Array>} Taux de complétion par tag
+ */
 export const getCompletionRateByTags = async () => {
   try {
-    // Données fictives
-    return [
-      { name: 'Bug', completion: 80 },
-      { name: 'Feature', completion: 60 },
-      { name: 'Documentation', completion: 90 },
-      { name: 'Research', completion: 45 }
-    ];
+    logger.debug('Fetching tag completion rates');
+    const response = await apiClient.get('/analytics/tags/completion');
+    return response.data;
   } catch (error) {
-    console.error('Error fetching tag completion rates:', error);
+    logger.error('Error fetching tag completion rates:', error);
     throw error;
   }
 };
