@@ -77,7 +77,7 @@ const ProjectList = () => {
         <h1>Mes Projets</h1>
         <div className="header-actions">
           <Link to="/projects/new" className="btn-primary">
-            <Icon name="plus" /> Nouveau Projet
+            <Icon name="" /> Nouveau Projet
           </Link>
         </div>
       </div>
@@ -132,7 +132,7 @@ const ProjectList = () => {
               : "Aucun projet ne correspond à ces critères."}
           </p>
           <Link to="/projects/new" className="btn-primary">
-            <Icon name="plus" /> Créer un projet
+            <Icon name="" /> Créer un projet
           </Link>
         </div>
       ) : (
@@ -151,15 +151,15 @@ const ProjectList = () => {
                 <p className="project-description">{project.description || 'Aucune description'}</p>
                 
                 
-                
+
                 
               </div>
               <div className="project-card-footer">
                 <Link to={`/projects/${project.id}`} className="btn-secondary">
-                  <Icon name="eye" /> Voir
+                  <Icon name="" /> Voir
                 </Link>
                 <Link to={`/projects/${project.id}/edit`} className="btn-secondary">
-                  <Icon name="edit-2" /> Modifier
+                  <Icon name="" /> Modifier
                 </Link>
               </div>
             </div>

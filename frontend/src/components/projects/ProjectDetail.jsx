@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getProjectById, deleteProject } from '../../api/projectService';
 import { getTasks } from '../../api/taskService';
 import Icon from '../common/Icon';
@@ -48,10 +48,10 @@ const ProjectDetail = () => {
 
   const getStatusClass = (status) => {
     switch (status) {
-      case 'ACTIVE': return 'status-active';
-      case 'COMPLETED': return 'status-completed';
-      case 'ARCHIVED': return 'status-archived';
-      default: return 'status-active';
+      case 'ACTIVE': return 'status-badge status-badge--active';
+      case 'COMPLETED': return 'status-badge status-badge--completed';
+      case 'ARCHIVED': return 'status-badge status-badge--archived';
+      default: return 'status-badge status-badge--active';
     }
   };
 
@@ -78,133 +78,119 @@ const ProjectDetail = () => {
       <div className="error-message">
         <Icon name="alert-circle" />
         <p>{error}</p>
-        <Link to="/projects" className="btn-secondary">
+        <button 
+          className="btn btn--primary" 
+          onClick={() => navigate('/projects')}
+        >
           Retour aux projets
-        </Link>
+        </button>
       </div>
     );
   }
 
   if (!project) {
     return (
-      <div className="empty-state">
+      <div className="not-found">
+        <Icon name="search" size="3em" />
         <h2>Projet non trouvé</h2>
-        <p>Le projet que vous recherchez n'existe pas ou a été supprimé.</p>
-        <Link to="/projects" className="btn-primary">
-          Voir tous les projets
+        <p>Le projet demandé n'existe pas ou a été supprimé.</p>
+        <Link to="/projects" className="btn btn--primary">
+          <Icon name="arrow-left" /> Voir tous les projets
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="project-detail-page">
-      <div className="page-header">
-        <div className="breadcrumbs">
-          <Link to="/projects">Projets</Link> / <span>{project.name}</span>
+    <div className="project-detail">
+      <div className="project-detail__header">
+        <div className="project-detail__title">
+          <h1>{project.name}</h1>
+          <span className={getStatusClass(project.status)}>
+            {project.status === 'ACTIVE' ? 'Actif' : 
+             project.status === 'COMPLETED' ? 'Terminé' : 
+             project.status === 'ARCHIVED' ? 'Archivé' : 'Actif'}
+          </span>
         </div>
-        <div className="header-actions">
-          <Link to={`/projects/${id}/edit`} className="btn-secondary">
+
+        <div className="project-detail__actions">
+          <Link to={`/projects/${id}/edit`} className="btn btn--secondary">
             <Icon name="edit-2" /> Modifier
           </Link>
-          <button onClick={handleDelete} className="btn-danger">
+          <button onClick={handleDelete} className="btn btn--danger">
             <Icon name="trash-2" /> Supprimer
           </button>
         </div>
       </div>
 
-      <div className="project-header-card">
-        <div className="project-info">
-          <h1>{project.name}</h1>
-          <div className={`project-status ${getStatusClass(project.status)}`}>
-            {project.status === 'ACTIVE' ? 'Actif' : 
-             project.status === 'COMPLETED' ? 'Terminé' : 
-             project.status === 'ARCHIVED' ? 'Archivé' : project.status}
-          </div>
-        </div>
-        <div className="project-meta-row">
-          <div className="project-meta-item">
-            <Icon name="calendar" />
-            <span>Début: {getFormattedDate(project.startDate)}</span>
-          </div>
-          <div className="project-meta-item">
-            <Icon name="calendar" />
-            <span>Fin prévue: {getFormattedDate(project.endDate)}</span>
-          </div>
-          <div className="project-meta-item">
-            <Icon name="bar-chart-2" />
-            <div className="progress-container">
-              <span>Progression: {project.progress || 0}%</span>
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
-                  style={{ width: `${project.progress || 0}%` }}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="project-tabs">
+      <div className="project-detail__tabs">
         <button 
-          className={activeTab === 'overview' ? 'active' : ''} 
+          className={activeTab === 'overview' ? 'tab-button tab-button--active' : 'tab-button'} 
           onClick={() => setActiveTab('overview')}
         >
-          <Icon name="grid" /> Vue d'ensemble
+          <Icon name="info" /> Vue d'ensemble
         </button>
         <button 
-          className={activeTab === 'tasks' ? 'active' : ''} 
+          className={activeTab === 'tasks' ? 'tab-button tab-button--active' : 'tab-button'} 
           onClick={() => setActiveTab('tasks')}
         >
           <Icon name="check-square" /> Tâches
         </button>
         <button 
-          className={activeTab === 'timeline' ? 'active' : ''} 
-          onClick={() => setActiveTab('timeline')}
+          className={activeTab === 'activity' ? 'tab-button tab-button--active' : 'tab-button'} 
+          onClick={() => setActiveTab('activity')}
         >
-          <Icon name="clock" /> Chronologie
+          <Icon name="activity" /> Activité
         </button>
       </div>
 
       {activeTab === 'overview' && (
-        <div className="project-overview">
+        <div className="project-detail__overview">
           <div className="card">
-            <div className="card-header">
-              <h3>Description</h3>
-            </div>
-            <div className="card-body">
-              <p className="project-description">
-                {project.description || "Aucune description n'a été fournie pour ce projet."}
-              </p>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="card-header">
-              <h3>Statistiques</h3>
-            </div>
-            <div className="card-body">
-              <div className="stats-grid">
-                <div className="stat-card">
-                  <div className="stat-value">{project.totalTasks || 0}</div>
-                  <div className="stat-label">Tâches totales</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-value">{project.inProgressTasks || 0}</div>
-                  <div className="stat-label">En cours</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-value">{project.completedTasks || 0}</div>
-                  <div className="stat-label">Terminées</div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-value">
-                    {project.completedTasks && project.totalTasks 
-                      ? Math.round((project.completedTasks / project.totalTasks) * 100) 
-                      : 0}%
+            <div className="card__body">
+              <div className="project-detail__description">
+                <h2>Description</h2>
+                <p>{project.description || 'Aucune description disponible pour ce projet.'}</p>
+              </div>
+              
+              <div className="project-detail__meta">
+                <div className="project-detail__dates">
+                  <div className="project-detail__date">
+                    <h3>Date de début</h3>
+                    <p>{getFormattedDate(project.startDate)}</p>
                   </div>
-                  <div className="stat-label">Taux d'achèvement</div>
+                  <div className="project-detail__date">
+                    <h3>Date de fin prévue</h3>
+                    <p>{getFormattedDate(project.endDate)}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="project-detail__stats">
+                <h2>Progression</h2>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-bar__fill" 
+                    style={{ width: `${project.completionRate || 0}%` }}
+                  ></div>
+                </div>
+                <div className="project-detail__task-stats">
+                  <div className="task-stat">
+                    <span className="task-stat__value">{tasks.length}</span>
+                    <span className="task-stat__label">Tâches totales</span>
+                  </div>
+                  <div className="task-stat">
+                    <span className="task-stat__value">
+                      {tasks.filter(t => t.status === 'DONE').length}
+                    </span>
+                    <span className="task-stat__label">Terminées</span>
+                  </div>
+                  <div className="task-stat">
+                    <span className="task-stat__value">
+                      {tasks.filter(t => t.status === 'IN_PROGRESS').length}
+                    </span>
+                    <span className="task-stat__label">En cours</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -213,86 +199,90 @@ const ProjectDetail = () => {
       )}
 
       {activeTab === 'tasks' && (
-        <div className="project-tasks-tab">
+        <div className="project-detail__tasks">
           <div className="card">
-            <div className="card-header">
-              <h3>Tâches du projet</h3>
-              <Link to="/tasks/new" className="btn-secondary btn-sm">
+            <div className="card__header">
+              <h2>Tâches du projet</h2>
+              <Link to={`/tasks/new?projectId=${id}`} className="btn btn--primary">
                 <Icon name="plus" /> Nouvelle tâche
               </Link>
             </div>
-            <div className="card-body">
+            <div className="card__body">
               {tasks.length === 0 ? (
                 <div className="empty-state">
-                  <p>Aucune tâche n'a encore été créée pour ce projet.</p>
-                  <Link to="/tasks/new" className="btn-primary">
+                  <Icon name="clipboard" size="3em" />
+                  <h3>Aucune tâche</h3>
+                  <p>Ce projet n'a pas encore de tâches. Commencez par en créer une!</p>
+                  <Link to={`/tasks/new?projectId=${id}`} className="btn btn--primary">
                     <Icon name="plus" /> Créer une tâche
                   </Link>
                 </div>
               ) : (
-                <div className="tasks-list">
+                <ul className="task-list">
                   {tasks.map(task => (
-                    <div key={task.id} className="task-list-item">
-                      <div className={`task-status-indicator ${task.status.toLowerCase()}`}></div>
-                      <div className="task-info">
-                        <h4>{task.title}</h4>
-                        <p>{task.description?.substring(0, 100)}{task.description?.length > 100 ? '...' : ''}</p>
-                        <div className="task-meta">
-                          <span className={`task-priority ${task.priority.toLowerCase()}`}>
-                            {task.priority}
-                          </span>
-                          <span className="task-due-date">
-                            <Icon name="calendar" />
-                            {getFormattedDate(task.dueDate)}
-                          </span>
-                        </div>
+                    <li key={task.id} className="task-list__item">
+                      <div className={`task-list__status task-list__status--${task.status?.toLowerCase() || 'todo'}`}></div>
+                      <div className="task-list__content">
+                        <h3>{task.title}</h3>
+                        <p>{task.description?.substring(0, 100)}...</p>
                       </div>
-                      <div className="task-actions">
-                        <Link to={`/tasks/${task.id}`} className="btn-icon">
+                      <div className="task-list__meta">
+                        <span className={`priority-badge priority-badge--${task.priority?.toLowerCase() || 'medium'}`}>
+                          {task.priority || 'Medium'}
+                        </span>
+                        {task.dueDate && (
+                          <span className="task-list__date">
+                            <Icon name="calendar" />
+                            {new Date(task.dueDate).toLocaleDateString('fr-FR')}
+                          </span>
+                        )}
+                      </div>
+                      <div className="task-list__actions">
+                        <Link to={`/tasks/${task.id}`} className="btn btn--icon">
                           <Icon name="eye" />
                         </Link>
-                        <Link to={`/tasks/${task.id}/edit`} className="btn-icon">
+                        <Link to={`/tasks/${task.id}/edit`} className="btn btn--icon">
                           <Icon name="edit-2" />
                         </Link>
                       </div>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </div>
           </div>
         </div>
       )}
 
-      {activeTab === 'timeline' && (
-        <div className="project-timeline">
+      {activeTab === 'activity' && (
+        <div className="project-detail__activity">
           <div className="card">
-            <div className="card-header">
-              <h3>Chronologie du projet</h3>
+            <div className="card__header">
+              <h2>Activité récente</h2>
             </div>
-            <div className="card-body">
+            <div className="card__body">
               <div className="timeline">
-                <div className="timeline-start">
-                  <div className="timeline-dot"></div>
-                  <div className="timeline-date">{getFormattedDate(project.startDate)}</div>
-                  <div className="timeline-label">Début du projet</div>
-                </div>
-                
-                {tasks.filter(task => task.status === 'DONE').slice(0, 3).map(task => (
-                  <div key={task.id} className="timeline-item">
-                    <div className="timeline-dot"></div>
-                    <div className="timeline-date">{getFormattedDate(task.completedAt || task.dueDate)}</div>
-                    <div className="timeline-content">
-                      <h4>{task.title}</h4>
-                      <p>Tâche terminée</p>
-                    </div>
+                {/* Exemple d'activité */}
+                <div className="timeline__item">
+                  <div className="timeline__icon">
+                    <Icon name="plus" />
                   </div>
-                ))}
-                
-                <div className="timeline-end">
-                  <div className="timeline-dot"></div>
-                  <div className="timeline-date">{getFormattedDate(project.endDate)}</div>
-                  <div className="timeline-label">Fin prévue</div>
+                  <div className="timeline__content">
+                    <span className="timeline__date">Aujourd'hui, 10:30</span>
+                    <h4>Nouvelle tâche ajoutée</h4>
+                    <p>La tâche "Préparer la présentation" a été créée</p>
+                  </div>
+                </div>
+
+                <div className="timeline__item">
+                  <div className="timeline__icon">
+                    <Icon name="edit-2" />
+                  </div>
+                  <div className="timeline__content">
+                    <span className="timeline__date">Hier, 15:45</span>
+                    <h4>Projet modifié</h4>
+                    <p>La description du projet a été mise à jour</p>
+                  </div>
                 </div>
               </div>
             </div>
